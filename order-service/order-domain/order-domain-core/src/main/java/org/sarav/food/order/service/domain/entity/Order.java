@@ -77,8 +77,12 @@ public class Order extends AggregateRoot<OrderId> {
         initializeOrderItems();
     }
 
+    /**
+     * Validate order for its price and field values
+     **/
     public void validateOrder(){
         validateInitialOrder();
+        validateOrderPrice();
     }
 
     public void validateOrderPrice(){
@@ -98,6 +102,10 @@ public class Order extends AggregateRoot<OrderId> {
         }
     }
 
+    /**
+     * Validate items price and total price values
+     * sent from client
+     */
     private void validateItemsPrice(){
         Money itemsTotal = this.getItems().stream().map(item -> item.getSubTotal()).reduce(Money.ZERO, Money::add);
 
@@ -110,6 +118,10 @@ public class Order extends AggregateRoot<OrderId> {
         }
     }
 
+    /**
+     * Validate individual order item price
+     * @param item
+     */
     private void validateItemPrice(OrderItem item){
         if(!item.isPriceValid()){
             throw new OrderDomainException("Invalid Order item price "+ item.getPrice().getAmount() + " is not equal to " + price.getAmount());
@@ -159,11 +171,12 @@ public class Order extends AggregateRoot<OrderId> {
 
     }
 
-    public void cancel(){
+    public void cancel(List<String> failureMessages){
         if(this.orderStatus != OrderStatus.CANCELLED || this.orderStatus != OrderStatus.PENDING){
             throw new OrderDomainException("Order is not in right status to change to CANCELLING state");
         }
         this.orderStatus = OrderStatus.CANCELLED;
+        this.updateFailureMessages(failureMessages);
     }
 
     public static final class Builder {
