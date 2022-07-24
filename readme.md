@@ -30,4 +30,6 @@ This module is contains all the entity objects related to the Order Service. It 
 - Custom Exceptions
 - Value Objects
 
+[OrderDomainServiceImpl](order-service/order-domain/order-domain-core/src/main/java/org/sarav/food/order/service/domain/OrderDomainServiceImpl.java)
+This is the implementation class for validating the values in order related entities.
 
