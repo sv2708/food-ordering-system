@@ -1,6 +1,6 @@
 package org.sarav.food.order.service.domain.entity;
 
-import org.sarav.food.order.service.domain.valueobject.OrderItemId;
+import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
 import org.sarav.food.system.domain.entity.BaseEntity;
 import org.sarav.food.system.domain.valueobjects.Money;
 import org.sarav.food.system.domain.valueobjects.OrderId;

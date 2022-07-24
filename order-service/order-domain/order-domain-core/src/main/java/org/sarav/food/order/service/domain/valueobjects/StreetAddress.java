@@ -1,4 +1,4 @@
-package org.sarav.food.order.service.domain.valueobject;
+package org.sarav.food.order.service.domain.valueobjects;
 
 import java.util.Objects;
 import java.util.UUID;

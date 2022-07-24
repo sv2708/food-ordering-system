@@ -16,8 +16,19 @@
             <groupId>org.sarav</groupId>
             <artifactId>order-domain-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>common-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
     </dependencies>
-
     <properties>
 
     </properties>

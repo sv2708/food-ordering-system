@@ -1,13 +1,12 @@
 package org.sarav.food.order.service.domain.entity;
 
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
-import org.sarav.food.order.service.domain.valueobject.OrderItemId;
-import org.sarav.food.order.service.domain.valueobject.StreetAddress;
-import org.sarav.food.order.service.domain.valueobject.TrackingId;
+import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
+import org.sarav.food.order.service.domain.valueobjects.StreetAddress;
+import org.sarav.food.order.service.domain.valueobjects.TrackingId;
 import org.sarav.food.system.domain.entity.AggregateRoot;
 import org.sarav.food.system.domain.valueobjects.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
