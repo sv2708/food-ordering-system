@@ -12,7 +12,6 @@ public class OrderItem extends BaseEntity<OrderItemId> {
      private OrderId orderId;
      private final Product product;
      private final int quantity;
-     private final Money money;
      private final Money subTotal;
      private final Money price;
 
@@ -21,7 +20,6 @@ public class OrderItem extends BaseEntity<OrderItemId> {
           orderId = builder.orderId;
           product = builder.product;
           quantity = builder.quantity;
-          money = builder.money;
           subTotal = builder.subTotal;
           price = builder.price;
      }
@@ -42,9 +40,6 @@ public class OrderItem extends BaseEntity<OrderItemId> {
           return quantity;
      }
 
-     public Money getMoney() {
-          return money;
-     }
 
      public Money getSubTotal() {
           return subTotal;

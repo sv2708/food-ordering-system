@@ -2,7 +2,7 @@ package org.sarav.food.order.service.domain.entity;
 
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
 import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
-import org.sarav.food.order.service.domain.valueobjects.StreetAddress;
+import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
 import org.sarav.food.order.service.domain.valueobjects.TrackingId;
 import org.sarav.food.system.domain.entity.AggregateRoot;
 import org.sarav.food.system.domain.valueobjects.*;
@@ -14,9 +14,13 @@ public class Order extends AggregateRoot<OrderId> {
 
     private CustomerId customerId;
     private RestaurantId restaurantId;
-    private StreetAddress deliveryAddress;
+    private DeliveryAddress deliveryAddress;
     private Money price;
     private List<OrderItem> items;
+    /**
+     * orderId, trackingId and orderStatus will be null
+     * initially, later will be updated.
+     */
     private TrackingId trackingId;
     private OrderStatus orderStatus;
     private List<String> failureMessages;
@@ -45,7 +49,7 @@ public class Order extends AggregateRoot<OrderId> {
         return restaurantId;
     }
 
-    public StreetAddress getDeliveryAddress() {
+    public DeliveryAddress getDeliveryAddress() {
         return deliveryAddress;
     }
 
@@ -182,7 +186,7 @@ public class Order extends AggregateRoot<OrderId> {
         private OrderId id;
         private CustomerId customerId;
         private RestaurantId restaurantId;
-        private StreetAddress deliveryAddress;
+        private DeliveryAddress deliveryAddress;
         private Money price;
         private List<OrderItem> items;
         private TrackingId trackingId;
@@ -207,7 +211,7 @@ public class Order extends AggregateRoot<OrderId> {
             return this;
         }
 
-        public Builder deliveryAddress(StreetAddress val) {
+        public Builder deliveryAddress(DeliveryAddress val) {
             deliveryAddress = val;
             return this;
         }

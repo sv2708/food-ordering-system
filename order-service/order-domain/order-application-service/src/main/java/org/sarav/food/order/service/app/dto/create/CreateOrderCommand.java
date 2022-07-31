@@ -21,7 +21,7 @@ public class CreateOrderCommand {
     @NotNull
     private final BigDecimal price;
     @NotNull
-    private final List<OrderItem> order;
+    private final List<OrderItemEntity> order;
     @NotNull
     private final OrderAddress address;
 
