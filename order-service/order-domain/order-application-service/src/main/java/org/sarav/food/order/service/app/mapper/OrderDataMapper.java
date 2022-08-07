@@ -60,12 +60,12 @@ public class OrderDataMapper {
 
     }
 
-    public CreateOrderResponse convertOrderToCreateOrderResponse(Order order, String message) {
+    public CreateOrderResponse convertOrderToCreateOrderResponse(Order order) {
 
         return CreateOrderResponse.builder()
                 .orderTrackingId(order.getTrackingId().getValue())
                 .orderStatus(order.getOrderStatus())
-                .response(message).build();
+                .build();
 
     }
 }
