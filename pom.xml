@@ -19,6 +19,7 @@
 
     <properties>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <mockito.version>4.5.1</mockito.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +53,12 @@
                 <groupId>org.sarav</groupId>
                 <artifactId>common-domain</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>4.5.1</version>
+                <scope>${mockito.version}</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

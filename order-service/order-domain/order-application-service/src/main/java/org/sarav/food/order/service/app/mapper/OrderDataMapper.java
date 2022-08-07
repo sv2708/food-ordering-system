@@ -4,6 +4,7 @@ import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;
 import org.sarav.food.order.service.app.dto.create.CreateOrderResponse;
 import org.sarav.food.order.service.app.dto.create.OrderAddress;
 import org.sarav.food.order.service.app.dto.create.OrderItemEntity;
+import org.sarav.food.order.service.app.dto.track.TrackOrderResponse;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.OrderItem;
 import org.sarav.food.order.service.domain.entity.Product;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class OrderDataMapper {
@@ -27,9 +27,9 @@ public class OrderDataMapper {
         return Restaurant.newBuilder()
                 .id(new RestaurantId(createOrderCommand.getRestaurantId()))
                 .productList(createOrderCommand.getOrder().stream()
-                                .map(orderItem -> Product.newBuilder()
-                                        .id(new ProductId(orderItem.getProductId())).build()
-                ).toList()).build();
+                        .map(orderItem -> Product.newBuilder()
+                                .id(new ProductId(orderItem.getProductId())).build()
+                        ).toList()).build();
 
     }
 
@@ -48,15 +48,18 @@ public class OrderDataMapper {
         return new DeliveryAddress(UUID.randomUUID(), address.getAddressLine1(), address.getAddressLine2(), address.getCity(), address.getPostalCode());
     }
 
-    private List<OrderItem> convertOrderItemEntitiesToOrderItems(List<OrderItemEntity> orderItemEntities){
+    private List<OrderItem> convertOrderItemEntitiesToOrderItems(List<OrderItemEntity> orderItemEntities) {
 
         return orderItemEntities.stream().map(orderItemEntity ->
-             OrderItem.newBuilder()
-                    .product( Product.newBuilder().id(new ProductId(orderItemEntity.getProductId())).build())
-                    .price(new Money(orderItemEntity.getPrice()))
-                    .subTotal(new Money(orderItemEntity.getSubTotal()))
-                    .quantity(orderItemEntity.getQuantity())
-                    .build()).toList();
+                OrderItem.newBuilder()
+                        .product(Product.newBuilder()
+                                .id(new ProductId(orderItemEntity.getProductId()))
+                                .price(new Money(orderItemEntity.getPrice()))
+                                .build())
+                        .price(new Money(orderItemEntity.getPrice()))
+                        .subTotal(new Money(orderItemEntity.getSubTotal()))
+                        .quantity(orderItemEntity.getQuantity())
+                        .build()).toList();
 
     }
 
@@ -68,4 +71,14 @@ public class OrderDataMapper {
                 .build();
 
     }
+
+    public TrackOrderResponse convertOrderToTrackOrderResponse(Order order) {
+
+        return TrackOrderResponse.builder()
+                .orderTrackingId(order.getTrackingId().getValue())
+                .orderStatus(order.getOrderStatus())
+                .failureMessages(order.getFailureMessages())
+                .build();
+    }
+
 }

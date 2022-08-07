@@ -1,8 +1,7 @@
-package org.sarav.food.order.service.app.ports.input;
+package org.sarav.food.order.service.app.ports;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;
-import org.sarav.food.order.service.app.dto.create.CreateOrderResponse;
 import org.sarav.food.order.service.app.mapper.OrderDataMapper;
 import org.sarav.food.order.service.app.ports.output.repository.CustomerRepository;
 import org.sarav.food.order.service.app.ports.output.repository.OrderRepository;
@@ -38,7 +37,7 @@ public class OrderCreateHelper {
     }
 
     @Transactional
-    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand){
+    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         checkCustomerExists(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurantExists(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
@@ -49,11 +48,11 @@ public class OrderCreateHelper {
         return orderCreatedEvent;
     }
 
-    private Order saveOrder(Order order){
+    private Order saveOrder(Order order) {
         Order savedOrder = orderRepository.save(order);
-        if(savedOrder == null){
-            log.error("Order Creation failed for order {}" , order.getId());
-            throw new OrderDomainException("Order Creation failed for Order "+ order.getId());
+        if (savedOrder == null) {
+            log.error("Order Creation failed for order {}", order.getId());
+            throw new OrderDomainException("Order Creation failed for Order " + order.getId());
         }
         log.info("Order Creation is Successful for Order {}", order.getId());
         return savedOrder;
@@ -63,21 +62,21 @@ public class OrderCreateHelper {
     private Restaurant checkRestaurantExists(CreateOrderCommand createOrderCommand) {
         Restaurant restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
         Optional<Restaurant> restaurantOptional = restaurantRepository.findRestaurantInformation(restaurant);
-        if(restaurantOptional.isEmpty()){
-            log.warn("Restaurant with ID {} is not found.", restaurant.getId());
-            throw new OrderDomainException("Restaurant with ID " + restaurant.getId() + "is not found");
+//        Optional<Restaurant> restaurantOptional = restaurantRepository.findRestaurantById(restaurant.getId().getValue());
+        if (restaurantOptional.isEmpty()) {
+            log.warn("Restaurant with ID {} is not found.", restaurant.getId().getValue());
+            throw new OrderDomainException("Restaurant with ID " + restaurant.getId().getValue() + " is not found");
         }
         return restaurantOptional.get();
     }
 
     private void checkCustomerExists(UUID customerId) {
         Optional<Customer> customer = customerRepository.findCustomer(customerId);
-        if(customer.isEmpty()){
+        if (customer.isEmpty()) {
             log.warn("Customer with id {} is not found", customerId);
-            throw new OrderDomainException("customer with ID "+ customerId + "is not found");
+            throw new OrderDomainException("customer with ID " + customerId + "is not found");
         }
     }
-
 
 
 }

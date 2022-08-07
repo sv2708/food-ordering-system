@@ -1,4 +1,4 @@
-package org.sarav.food.order.service.app.ports.input;
+package org.sarav.food.order.service.app.ports;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;

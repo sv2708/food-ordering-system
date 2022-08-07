@@ -4,6 +4,7 @@ import org.sarav.food.system.domain.entity.AggregateRoot;
 import org.sarav.food.system.domain.valueobjects.RestaurantId;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Restaurant extends AggregateRoot<RestaurantId> {
 
@@ -54,5 +55,21 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         public Restaurant build() {
             return new Restaurant(this);
         }
+
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Restaurant)) return false;
+        if (!super.equals(o)) return false;
+        Restaurant that = (Restaurant) o;
+        return active == that.active && productList.equals(that.productList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), active, productList);
     }
 }
