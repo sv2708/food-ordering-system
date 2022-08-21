@@ -7,10 +7,12 @@ import java.util.Objects;
 public class Money {
     private BigDecimal amount;
 
-    public static final Money ZERO = new Money(BigDecimal.ZERO);
-
     public Money(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Money(String amount) {
+        this.amount = new BigDecimal(amount);
     }
 
     public Money(Money money) {

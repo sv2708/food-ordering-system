@@ -111,7 +111,8 @@ public class Order extends AggregateRoot<OrderId> {
      * sent from client
      */
     private void validateItemsPrice() {
-        Money itemsTotal = this.getItems().stream().map(item -> item.getSubTotal()).reduce(Money.ZERO, Money::add);
+
+        Money itemsTotal = this.getItems().stream().map(item -> item.getSubTotal()).reduce(new Money("0"), Money::add);
 
         for (OrderItem item : this.getItems()) {
             this.validateItemPrice(item);
@@ -172,8 +173,6 @@ public class Order extends AggregateRoot<OrderId> {
                 this.failureMessages.addAll(failureMessages.stream().filter(msg -> !msg.isEmpty()).toList());
             }
         }
-
-
     }
 
     public void cancel(List<String> failureMessages) {
@@ -262,5 +261,5 @@ public class Order extends AggregateRoot<OrderId> {
     public int hashCode() {
         return Objects.hash(super.hashCode(), customerId, restaurantId, deliveryAddress, price, items, trackingId, orderStatus, failureMessages);
     }
-    
+
 }

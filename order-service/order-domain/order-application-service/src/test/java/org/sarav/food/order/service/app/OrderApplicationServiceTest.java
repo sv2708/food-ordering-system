@@ -1,6 +1,6 @@
 package org.sarav.food.order.service.app;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;
@@ -16,6 +16,7 @@ import org.sarav.food.order.service.domain.entity.Customer;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
+import org.sarav.food.order.service.domain.exception.OrderDomainException;
 import org.sarav.food.system.domain.valueobjects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,8 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +59,7 @@ public class OrderApplicationServiceTest {
     private final UUID PRODUCT_ID = UUID.fromString("520d3a18-8e64-439e-a052-9b9bfca326ed");
     private final BigDecimal PRICE = new BigDecimal("200.0");
 
-    @BeforeAll
+    @BeforeEach
     private void init() {
         createOrderCommand = CreateOrderCommand.builder().customerId(CUSTOMER_ID)
                 .restaurantId(RESTAURANT_ID)
@@ -110,12 +110,42 @@ public class OrderApplicationServiceTest {
 
     }
 
-    @Test
+    @Test // normal flow
     public void testCreateOrder() {
         CreateOrderResponse createOrderResponse = orderApplicationService.createOrder(createOrderCommand);
         assertEquals(createOrderResponse.getOrderStatus(), OrderStatus.PENDING);
         assertNotNull(createOrderResponse.getOrderTrackingId());
     }
 
+    @Test //total price of all items validation
+    public void testCreateOrderWrongPrice() {
+        var exception = assertThrows(OrderDomainException.class, () -> orderApplicationService.createOrder(createOrderCommandWrongPrice));
+        var expectedMessage = "Order Total Price 150 is not equal to the items total price 200.00";
+        assertEquals(expectedMessage, exception.getMessage());
+    }
+
+
+    @Test //individual item price (quantity * product price) validation
+    public void testCreateOrderWrongProductPrice() {
+        var exception = assertThrows(OrderDomainException.class, () -> orderApplicationService.createOrder(createOrderCommandWrongProductPrice));
+        var expected = "Invalid Order item price 50.0 is not equal to 200.0";
+        assertEquals(expected, exception.getMessage());
+    }
+
+    @Test
+    public void testCreateOrderWhenRestaurantInactive() {
+        Restaurant restaurantResponseInactive = Restaurant.newBuilder().id(new RestaurantId(RESTAURANT_ID))
+                .active(false)
+                .productList(List.of(Product.newBuilder().id(new ProductId(PRODUCT_ID))
+                        .price(new Money(new BigDecimal("90.00")))
+                        .name("product-1")
+                        .build()))
+                .build();
+        Restaurant restaurantFromCommand = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
+        when(restaurantRepository.findRestaurantInformation(restaurantFromCommand)).thenReturn(Optional.of(restaurantResponseInactive));
+        var exception = assertThrows(OrderDomainException.class, () -> orderApplicationService.createOrder(createOrderCommand));
+        var expectedMsg = "Restaurant with id 520d3a18-8e64-439e-a052-9b9bfca326ed is not currently active";
+        assertEquals(expectedMsg, exception.getMessage());
+    }
 
 }

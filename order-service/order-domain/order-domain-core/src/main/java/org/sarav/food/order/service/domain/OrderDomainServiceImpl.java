@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j
-public class OrderDomainServiceImpl implements OrderDomainService{
+public class OrderDomainServiceImpl implements OrderDomainService {
 
     private static final String UTC = "UTC";
 
@@ -54,14 +54,15 @@ public class OrderDomainServiceImpl implements OrderDomainService{
     }
 
     private void validateRestaurant(Restaurant restaurant) {
-        if(!restaurant.isActive()){
-            throw new OrderDomainException("Restaurant with id "+ restaurant.getId() + " is not currently active");
+        if (!restaurant.isActive()) {
+            throw new OrderDomainException("Restaurant with id " + restaurant.getId().getValue() + " is not currently active");
         }
     }
 
     /**
      * Checks if product in each order item is same as in restaurant list
      * and set its current price and name
+     *
      * @param order
      * @param restaurant
      */
@@ -69,7 +70,7 @@ public class OrderDomainServiceImpl implements OrderDomainService{
         order.getItems().forEach(orderItem -> {
             restaurant.getProductList().forEach(restaurantProduct -> {
                 var currentProduct = orderItem.getProduct();
-                if(restaurantProduct.equals(currentProduct)){
+                if (restaurantProduct.equals(currentProduct)) {
                     currentProduct.updateWithCurrentNameAndPrice(restaurantProduct.getName(), restaurantProduct.getPrice());
                 }
             });
