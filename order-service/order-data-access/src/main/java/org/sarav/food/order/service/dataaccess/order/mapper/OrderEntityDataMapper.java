@@ -55,7 +55,7 @@ public class OrderEntityDataMapper {
         return orderItemEntities.stream()
                 .map(item -> OrderItem.newBuilder().id(new OrderItemId(item.getId()))
                         .orderId(new OrderId(item.getOrder().getId()))
-                        .product(Product.newBuilder().id(new ProductId(item.getProductId())).build())
+                        .product(Product.builder().id(new ProductId(item.getProductId())).build())
                         .quantity(item.getQuantity())
                         .price(new Money(item.getPrice()))
                         .subTotal(new Money(item.getSubTotal()))

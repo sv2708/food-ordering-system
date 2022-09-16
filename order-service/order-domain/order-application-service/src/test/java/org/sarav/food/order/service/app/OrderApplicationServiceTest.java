@@ -92,9 +92,9 @@ public class OrderApplicationServiceTest {
         customer.setId(new CustomerId(CUSTOMER_ID));
 
         Restaurant restaurantFromCommand = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);
-        Restaurant restaurantResponse = Restaurant.newBuilder().id(new RestaurantId(RESTAURANT_ID))
+        Restaurant restaurantResponse = Restaurant.builder().id(new RestaurantId(RESTAURANT_ID))
                 .active(true)
-                .productList(List.of(Product.newBuilder().id(new ProductId(PRODUCT_ID))
+                .productList(List.of(Product.builder().id(new ProductId(PRODUCT_ID))
                         .price(new Money(new BigDecimal("50.00")))
                         .name("product-1")
                         .build()))
@@ -134,9 +134,9 @@ public class OrderApplicationServiceTest {
 
     @Test
     public void testCreateOrderWhenRestaurantInactive() {
-        Restaurant restaurantResponseInactive = Restaurant.newBuilder().id(new RestaurantId(RESTAURANT_ID))
+        Restaurant restaurantResponseInactive = Restaurant.builder().id(new RestaurantId(RESTAURANT_ID))
                 .active(false)
-                .productList(List.of(Product.newBuilder().id(new ProductId(PRODUCT_ID))
+                .productList(List.of(Product.builder().id(new ProductId(PRODUCT_ID))
                         .price(new Money(new BigDecimal("90.00")))
                         .name("product-1")
                         .build()))
