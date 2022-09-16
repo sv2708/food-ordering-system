@@ -48,14 +48,15 @@
       }
     },
     {
-      "name": "paymentStatus",
+      "name": "orderPaymentStatus",
       "type": {
         "type": "enum",
-        "name": "PaymentStatus",
+        "name": "OrderPaymentStatus",
         "symbols": [
           "COMPLETED",
           "PENDING",
-          "FAILED"
+          "FAILED",
+          "ORDER_CANCELLED"
         ]
       }
     }
