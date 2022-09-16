@@ -1,7 +1,7 @@
 package org.sarav.food.order.service.domain.entity;
 
-import org.sarav.food.system.domain.entity.AggregateRoot;
-import org.sarav.food.system.domain.valueobjects.RestaurantId;
+import org.sarav.food.order.system.domain.entity.AggregateRoot;
+import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
 
 import java.util.List;
 import java.util.Objects;

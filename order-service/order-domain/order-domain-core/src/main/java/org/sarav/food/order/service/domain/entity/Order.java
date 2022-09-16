@@ -4,8 +4,8 @@ import org.sarav.food.order.service.domain.exception.OrderDomainException;
 import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
 import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
 import org.sarav.food.order.service.domain.valueobjects.TrackingId;
-import org.sarav.food.system.domain.entity.AggregateRoot;
-import org.sarav.food.system.domain.valueobjects.*;
+import org.sarav.food.order.system.domain.entity.AggregateRoot;
+import org.sarav.food.order.system.domain.valueobjects.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +25,8 @@ public class Order extends AggregateRoot<OrderId> {
     private TrackingId trackingId;
     private OrderStatus orderStatus;
     private List<String> failureMessages;
+
+    public static final String FAILURE_MSG_DELIMITER = "-";
 
     private Order(Builder builder) {
         this.setId(builder.id);

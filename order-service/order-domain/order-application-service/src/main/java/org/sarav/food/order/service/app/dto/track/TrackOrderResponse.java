@@ -3,7 +3,7 @@ package org.sarav.food.order.service.app.dto.track;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.sarav.food.system.domain.valueobjects.OrderStatus;
+import org.sarav.food.order.system.domain.valueobjects.OrderStatus;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

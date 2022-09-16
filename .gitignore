@@ -1,4 +1,5 @@
 target
 .idea
+.jpb
 **/target
 infrastructure/docker-compose/volumes

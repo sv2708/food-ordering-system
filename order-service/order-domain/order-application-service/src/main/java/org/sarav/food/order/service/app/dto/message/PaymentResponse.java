@@ -4,7 +4,7 @@ package org.sarav.food.order.service.app.dto.message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.sarav.food.system.domain.valueobjects.PaymentStatus;
+import org.sarav.food.order.system.domain.valueobjects.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

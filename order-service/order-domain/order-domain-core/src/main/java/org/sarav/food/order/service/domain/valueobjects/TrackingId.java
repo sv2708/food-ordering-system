@@ -1,6 +1,6 @@
 package org.sarav.food.order.service.domain.valueobjects;
 
-import org.sarav.food.system.domain.valueobjects.BaseId;
+import org.sarav.food.order.system.domain.valueobjects.BaseId;
 
 import java.util.UUID;
 

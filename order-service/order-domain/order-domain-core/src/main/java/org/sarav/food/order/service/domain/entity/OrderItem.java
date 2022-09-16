@@ -1,9 +1,9 @@
 package org.sarav.food.order.service.domain.entity;
 
 import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
-import org.sarav.food.system.domain.entity.BaseEntity;
-import org.sarav.food.system.domain.valueobjects.Money;
-import org.sarav.food.system.domain.valueobjects.OrderId;
+import org.sarav.food.order.system.domain.entity.BaseEntity;
+import org.sarav.food.order.system.domain.valueobjects.Money;
+import org.sarav.food.order.system.domain.valueobjects.OrderId;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -68,7 +68,6 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         private OrderId orderId;
         private Product product;
         private int quantity;
-        private Money money;
         private Money subTotal;
         private Money price;
 
@@ -92,11 +91,6 @@ public class OrderItem extends BaseEntity<OrderItemId> {
 
         public Builder quantity(int val) {
             quantity = val;
-            return this;
-        }
-
-        public Builder money(Money val) {
-            money = val;
             return this;
         }
 

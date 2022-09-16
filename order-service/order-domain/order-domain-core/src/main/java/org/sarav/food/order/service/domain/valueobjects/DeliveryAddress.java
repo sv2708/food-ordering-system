@@ -19,6 +19,19 @@ public class DeliveryAddress {
         this.city = city;
     }
 
+    private DeliveryAddress(Builder builder) {
+        id = builder.id;
+        addressLine1 = builder.addressLine1;
+        addressLine2 = builder.addressLine2;
+        zipcode = builder.zipcode;
+        city = builder.city;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+
     public UUID getId() {
         return id;
     }
@@ -51,5 +64,45 @@ public class DeliveryAddress {
     @Override
     public int hashCode() {
         return Objects.hash(addressLine1, addressLine2, zipcode, city);
+    }
+
+    public static final class Builder {
+        private UUID id;
+        private String addressLine1;
+        private String addressLine2;
+        private String zipcode;
+        private String city;
+
+        private Builder() {
+        }
+
+        public Builder id(UUID val) {
+            id = val;
+            return this;
+        }
+
+        public Builder addressLine1(String val) {
+            addressLine1 = val;
+            return this;
+        }
+
+        public Builder addressLine2(String val) {
+            addressLine2 = val;
+            return this;
+        }
+
+        public Builder zipcode(String val) {
+            zipcode = val;
+            return this;
+        }
+
+        public Builder city(String val) {
+            city = val;
+            return this;
+        }
+
+        public DeliveryAddress build() {
+            return new DeliveryAddress(this);
+        }
     }
 }

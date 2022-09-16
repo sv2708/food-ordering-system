@@ -21,6 +21,12 @@
     <properties>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <mockito.version>4.5.1</mockito.version>
+        <spring-boot.version>2.7.0</spring-boot.version>
+        <kafka-avro-serializer.version>7.0.1</kafka-avro-serializer.version>
+        <spring-kafka.version>2.7.1</spring-kafka.version>
+        <avro.version>1.10.2</avro.version>
+        <javax.version>1.3.2</javax.version>
+
     </properties>
 
     <dependencyManagement>
@@ -56,10 +62,41 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.sarav</groupId>
+                <artifactId>common-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sarav</groupId>
+                <artifactId>kafka-config-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sarav</groupId>
+                <artifactId>kafka-producer</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sarav</groupId>
+                <artifactId>kafka-consumer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>4.5.1</version>
-                <scope>${mockito.version}</scope>
+                <version>${mockito.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <optional>true</optional>
+                <version>${spring-boot.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

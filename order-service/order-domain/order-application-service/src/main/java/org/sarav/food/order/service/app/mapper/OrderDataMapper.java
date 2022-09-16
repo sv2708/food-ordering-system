@@ -10,10 +10,10 @@ import org.sarav.food.order.service.domain.entity.OrderItem;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
 import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
-import org.sarav.food.system.domain.valueobjects.CustomerId;
-import org.sarav.food.system.domain.valueobjects.Money;
-import org.sarav.food.system.domain.valueobjects.ProductId;
-import org.sarav.food.system.domain.valueobjects.RestaurantId;
+import org.sarav.food.order.system.domain.valueobjects.CustomerId;
+import org.sarav.food.order.system.domain.valueobjects.Money;
+import org.sarav.food.order.system.domain.valueobjects.ProductId;
+import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

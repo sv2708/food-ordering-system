@@ -17,7 +17,7 @@ import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
-import org.sarav.food.system.domain.valueobjects.*;
+import org.sarav.food.order.system.domain.valueobjects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

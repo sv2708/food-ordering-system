@@ -1,6 +1,6 @@
 package org.sarav.food.order.service.domain.exception;
 
-import org.sarav.food.system.domain.exception.DomainException;
+import org.sarav.food.order.system.domain.exception.DomainException;
 
 public class OrderDomainException extends DomainException {
 

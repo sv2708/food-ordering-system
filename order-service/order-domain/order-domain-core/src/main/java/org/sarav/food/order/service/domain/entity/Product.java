@@ -1,8 +1,8 @@
 package org.sarav.food.order.service.domain.entity;
 
-import org.sarav.food.system.domain.entity.BaseEntity;
-import org.sarav.food.system.domain.valueobjects.Money;
-import org.sarav.food.system.domain.valueobjects.ProductId;
+import org.sarav.food.order.system.domain.entity.BaseEntity;
+import org.sarav.food.order.system.domain.valueobjects.Money;
+import org.sarav.food.order.system.domain.valueobjects.ProductId;
 
 public class Product extends BaseEntity<ProductId> {
 
