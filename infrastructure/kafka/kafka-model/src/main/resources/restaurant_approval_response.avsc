@@ -46,13 +46,23 @@
       }
     },
     {
+      "name": "price",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      }
+    },
+    {
       "name": "restaurantApprovalStatus",
       "type": {
         "type": "enum",
         "name": "RestaurantApprovalStatus",
         "symbols": [
           "APPROVED",
-          "REJECTED"
+          "REJECTED",
+          "PAID"
         ]
       }
     },

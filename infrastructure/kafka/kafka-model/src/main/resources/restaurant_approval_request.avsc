@@ -45,7 +45,8 @@
         "name": "RestaurantApprovalStatus",
         "symbols": [
           "APPROVED",
-          "REJECTED"
+          "REJECTED",
+          "PAID"
         ]
       }
     },
@@ -70,6 +71,15 @@
             }
           ]
         }
+      }
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
       }
     },
     {
