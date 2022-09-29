@@ -35,7 +35,7 @@ services:
       KAFKA_COMPRESSION_TYPE: producer
       KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
     volumes:
-      - './volumes/kafka/broker1:/var/lib/kafka/data'
+      - 'food-order-kafka-volume-broker1:/var/lib/kafka/data'
     networks:
       - ${GLOBAL_NETWORK:-kafka}
 
@@ -54,7 +54,7 @@ services:
       KAFKA_COMPRESSION_TYPE: producer
       KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
     volumes:
-      - './volumes/kafka/broker2:/var/lib/kafka/data'
+      - 'food-order-kafka-volume-broker2:/var/lib/kafka/data'
     networks:
       - ${GLOBAL_NETWORK:-kafka}
 
@@ -73,7 +73,7 @@ services:
       KAFKA_COMPRESSION_TYPE: producer
       KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
     volumes:
-      - './volumes/kafka/broker3:/var/lib/kafka/data'
+      - 'food-order-kafka-volume-broker3:/var/lib/kafka/data'
     networks:
       - ${GLOBAL_NETWORK:-kafka}
 
@@ -85,3 +85,9 @@ services:
       ZK_HOSTS: "zookeeper:2181"
     networks:
       - ${GLOBAL_NETWORK:-kafka}
+
+
+volumes:
+  food-order-kafka-volume-broker1:
+  food-order-kafka-volume-broker2:
+  food-order-kafka-volume-broker3:

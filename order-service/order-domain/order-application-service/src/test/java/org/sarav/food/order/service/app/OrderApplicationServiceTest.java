@@ -65,7 +65,7 @@ public class OrderApplicationServiceTest {
                 .restaurantId(RESTAURANT_ID)
                 .price(PRICE)
                 .address(OrderAddress.builder().addressLine1("Line 1").addressLine2("2").city("city").postalCode("423532").build())
-                .order(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
+                .items(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
                         .price(new BigDecimal("50.0")).quantity(4)
                         .subTotal(new BigDecimal("200.0")).build()))
                 .build();
@@ -74,7 +74,7 @@ public class OrderApplicationServiceTest {
                 .restaurantId(RESTAURANT_ID)
                 .price(new BigDecimal("150"))
                 .address(OrderAddress.builder().addressLine1("Line 1").addressLine2("2").city("city").postalCode("423532").build())
-                .order(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
+                .items(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
                         .price(new BigDecimal("50.0")).quantity(4)
                         .subTotal(new BigDecimal("200.0")).build()))
                 .build();
@@ -83,7 +83,7 @@ public class OrderApplicationServiceTest {
                 .restaurantId(RESTAURANT_ID)
                 .price(PRICE)
                 .address(OrderAddress.builder().addressLine1("Line 1").addressLine2("2").city("city").postalCode("423532").build())
-                .order(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
+                .items(List.of(OrderItemEntity.builder().productId(PRODUCT_ID)
                         .price(new BigDecimal("50.0")).quantity(4)
                         .subTotal(new BigDecimal("150.0")).build()))
                 .build();

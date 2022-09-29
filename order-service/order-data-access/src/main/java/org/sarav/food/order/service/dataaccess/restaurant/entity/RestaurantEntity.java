@@ -24,7 +24,7 @@ import java.util.UUID;
 public class RestaurantEntity {
 
     @Id
-    private UUID id;
+    private UUID restaurantId;
     @Id
     private UUID productId;
 
@@ -38,11 +38,11 @@ public class RestaurantEntity {
         if (this == o) return true;
         if (!(o instanceof RestaurantEntity)) return false;
         RestaurantEntity that = (RestaurantEntity) o;
-        return id.equals(that.id) && productId.equals(that.productId);
+        return restaurantId.equals(that.restaurantId) && productId.equals(that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId);
+        return Objects.hash(restaurantId, productId);
     }
 }

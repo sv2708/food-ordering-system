@@ -20,8 +20,8 @@ public class CreateOrderCommand {
     private final UUID restaurantId;
     @NotNull
     private final BigDecimal price;
-    @NotNull
-    private final List<OrderItemEntity> order;
+    @NotNull(message = "Order in CreateOrderCommand must not be null")
+    private final List<OrderItemEntity> items;
     @NotNull
     private final OrderAddress address;
 

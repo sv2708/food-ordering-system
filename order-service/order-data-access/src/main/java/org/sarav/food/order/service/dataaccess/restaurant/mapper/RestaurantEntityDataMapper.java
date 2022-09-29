@@ -42,7 +42,7 @@ public class RestaurantEntityDataMapper {
                         .build())
                 .collect(Collectors.toList());
 
-        return Restaurant.builder().id(new RestaurantId(restaurantEntity.getId()))
+        return Restaurant.builder().id(new RestaurantId(restaurantEntity.getRestaurantId()))
                 .active(restaurantEntity.getRestaurantActive())
                 .productList(restaurantProducts)
                 .build();

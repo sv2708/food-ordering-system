@@ -10,12 +10,14 @@ import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
 import org.sarav.food.order.service.domain.valueobjects.OrderItemId;
 import org.sarav.food.order.service.domain.valueobjects.TrackingId;
 import org.sarav.food.order.system.domain.valueobjects.*;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class OrderEntityDataMapper {
 
     public OrderEntity OrderToOrderEntity(Order order) {

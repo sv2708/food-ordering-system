@@ -16,6 +16,7 @@ import org.sarav.food.order.system.domain.valueobjects.ProductId;
 import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class OrderDataMapper {
 
         return Restaurant.builder()
                 .id(new RestaurantId(createOrderCommand.getRestaurantId()))
-                .productList(createOrderCommand.getOrder().stream()
+                .productList(createOrderCommand.getItems().stream()
                         .map(orderItem -> Product.builder()
                                 .id(new ProductId(orderItem.getProductId())).build()
                         ).toList()).build();
@@ -38,14 +39,15 @@ public class OrderDataMapper {
         return Order.builder().customerId(new CustomerId(createOrderCommand.getCustomerId()))
                 .restaurantId(new RestaurantId(createOrderCommand.getRestaurantId()))
                 .price(new Money(createOrderCommand.getPrice()))
-                .items(convertOrderItemEntitiesToOrderItems(createOrderCommand.getOrder()))
+                .items(convertOrderItemEntitiesToOrderItems(createOrderCommand.getItems()))
                 .deliveryAddress(convertOrderAddressToDeliveryAddress(createOrderCommand.getAddress()))
+                .failureMessages(new ArrayList<>())
                 .build();
 
     }
 
     private DeliveryAddress convertOrderAddressToDeliveryAddress(OrderAddress address) {
-        return new DeliveryAddress(UUID.randomUUID(), address.getAddressLine1(), address.getAddressLine2(), address.getCity(), address.getPostalCode());
+        return new DeliveryAddress(UUID.randomUUID(), address.getAddressLine1(), address.getAddressLine2(), address.getPostalCode(), address.getCity());
     }
 
     private List<OrderItem> convertOrderItemEntitiesToOrderItems(List<OrderItemEntity> orderItemEntities) {

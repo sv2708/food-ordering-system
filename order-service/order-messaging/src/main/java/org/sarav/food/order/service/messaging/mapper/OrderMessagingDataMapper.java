@@ -8,10 +8,12 @@ import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.event.OrderPaidEvent;
 import org.sarav.food.order.system.domain.valueobjects.OrderApprovalStatus;
 import org.sarav.food.order.system.domain.valueobjects.PaymentStatus;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Component
 public class OrderMessagingDataMapper {
 
     public PaymentRequestAvroModel orderCreatedEventToPaymentRequestAvroModel(OrderCreatedEvent orderCreatedEvent) {
