@@ -2,7 +2,7 @@ server:
   port: 8181
 logging:
   level:
-    org.sarav.food: ERROR
+    root: INFO
 
 order-service:
   payment-request-topic-name: payment-request
@@ -20,7 +20,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=order&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
     username: postgres
-    password:
+    password: abc123
     driver-class-name: org.postgresql.Driver
   sql:
     init:
@@ -29,7 +29,7 @@ spring:
       mode: always
 
 kafka-config:
-  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  bootstrap-servers: localhost:19091, localhost:19092, localhost:19093
   schema-registry-url-key: schema.registry.url
   schema-registry-url: http://localhost:8081
   num-of-partitions: 3

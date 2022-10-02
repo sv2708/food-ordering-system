@@ -12,7 +12,7 @@ spring:
   datasource:
     url: "jdbc:postgresql://localhost:5432/postgres?currentSchema=customer&binaryTransfer=true&reWriteBatchedInserts=true&stringType=unspecified"
     username: postgres
-    password:
+    password: abc123
     driver-class-name: org.postgresql.Driver
   sql:
     init:

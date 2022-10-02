@@ -21,6 +21,7 @@ public class OrderMessagingDataMapper {
         return PaymentRequestAvroModel.newBuilder()
                 .setCreatedAt(orderCreatedEvent.getCreatedAt().toInstant())
                 .setOrderId(orderCreatedEvent.getOrder().getId().getValue().toString())
+                .setCustomerId(orderCreatedEvent.getOrder().getCustomerId().getValue().toString())
                 .setId(UUID.randomUUID().toString())
                 .setOrderPaymentStatus(OrderPaymentStatus.PENDING)
                 .setSagaId("")
