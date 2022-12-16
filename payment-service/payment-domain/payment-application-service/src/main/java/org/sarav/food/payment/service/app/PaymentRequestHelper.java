@@ -1,6 +1,7 @@
 package org.sarav.food.payment.service.app;
 
 import lombok.extern.slf4j.Slf4j;
+import org.sarav.food.order.system.domain.event.publisher.DomainEventPublisher;
 import org.sarav.food.order.system.domain.valueobjects.CustomerId;
 import org.sarav.food.payment.service.app.dto.PaymentRequest;
 import org.sarav.food.payment.service.app.exception.PaymentApplicationServiceException;
@@ -12,7 +13,10 @@ import org.sarav.food.payment.service.domain.PaymentDomainService;
 import org.sarav.food.payment.service.domain.entity.CreditEntry;
 import org.sarav.food.payment.service.domain.entity.CreditHistory;
 import org.sarav.food.payment.service.domain.entity.Payment;
+import org.sarav.food.payment.service.domain.event.PaymentCancelledEvent;
+import org.sarav.food.payment.service.domain.event.PaymentCompletedEvent;
 import org.sarav.food.payment.service.domain.event.PaymentEvent;
+import org.sarav.food.payment.service.domain.event.PaymentFailedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -28,17 +32,26 @@ public class PaymentRequestHelper {
     private CreditHistoryRepository creditHistoryRepository;
     private PaymentDataMapper paymentDataMapper;
     private PaymentDomainService paymentDomainService;
+    private DomainEventPublisher<PaymentCompletedEvent> paymentCompletedMessagePublisher;
+    private DomainEventPublisher<PaymentFailedEvent> paymentFailedMessagePublisher;
+    private DomainEventPublisher<PaymentCancelledEvent> paymentCancelledMessagePublisher;
 
     public PaymentRequestHelper(PaymentRepository paymentRepository,
                                 CreditEntryRepository creditEntryRepository,
                                 CreditHistoryRepository creditHistoryRepository,
                                 PaymentDataMapper paymentDataMapper,
-                                PaymentDomainService paymentDomainService) {
+                                PaymentDomainService paymentDomainService,
+                                DomainEventPublisher<PaymentCompletedEvent> paymentCompletedMessagePublisher,
+                                DomainEventPublisher<PaymentFailedEvent> paymentFailedMessagePublisher,
+                                DomainEventPublisher<PaymentCancelledEvent> paymentCancelledMessagePublisher) {
         this.paymentRepository = paymentRepository;
         this.creditEntryRepository = creditEntryRepository;
         this.creditHistoryRepository = creditHistoryRepository;
         this.paymentDataMapper = paymentDataMapper;
         this.paymentDomainService = paymentDomainService;
+        this.paymentCompletedMessagePublisher = paymentCompletedMessagePublisher;
+        this.paymentFailedMessagePublisher = paymentFailedMessagePublisher;
+        this.paymentCancelledMessagePublisher = paymentCancelledMessagePublisher;
     }
 
     public PaymentEvent persistPayment(PaymentRequest paymentRequestModel) {
@@ -48,7 +61,7 @@ public class PaymentRequestHelper {
         List<CreditHistory> creditHistories = getCreditHistories(payment.getCustomerId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentCompletedEvent = paymentDomainService.validateAndInitiatePayment(payment, creditEntry,
-                creditHistories, failureMessages);
+                creditHistories, failureMessages, paymentCompletedMessagePublisher, paymentFailedMessagePublisher);
         paymentRepository.save(payment);
         if (failureMessages.size() == 0) {
             log.info("Payment Successfully initiated for order {}", payment.getOrderId().getValue());
@@ -75,7 +88,7 @@ public class PaymentRequestHelper {
         CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
         List<CreditHistory> creditHistories = getCreditHistories(payment.getCustomerId());
         List<String> failureMessages = new ArrayList<>();
-        PaymentEvent paymentCancelledEvent = paymentDomainService.validateAndCancelPayment(payment, creditEntry, creditHistories, failureMessages);
+        PaymentEvent paymentCancelledEvent = paymentDomainService.validateAndCancelPayment(payment, creditEntry, creditHistories, failureMessages, paymentFailedMessagePublisher, paymentCancelledMessagePublisher);
         paymentRepository.save(payment);
         if (failureMessages.size() == 0) {
             log.info("Payment for OrderId " + payment.getOrderId().getValue() + " is cancelled successfully.");

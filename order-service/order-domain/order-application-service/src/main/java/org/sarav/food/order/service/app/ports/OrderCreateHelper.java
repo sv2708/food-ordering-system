@@ -12,6 +12,7 @@ import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.Restaurant;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
+import org.sarav.food.order.system.domain.event.publisher.DomainEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +28,15 @@ public class OrderCreateHelper {
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
+    private final DomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher;
 
-    public OrderCreateHelper(OrderDomainService orderDomainService, OrderRepository orderRepository, CustomerRepository customerRepository, RestaurantRepository restaurantRepository, OrderDataMapper orderDataMapper) {
+    public OrderCreateHelper(OrderDomainService orderDomainService, OrderRepository orderRepository, CustomerRepository customerRepository, RestaurantRepository restaurantRepository, OrderDataMapper orderDataMapper, DomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.restaurantRepository = restaurantRepository;
         this.orderDataMapper = orderDataMapper;
+        this.orderCreatedEventPublisher = orderCreatedEventPublisher;
     }
 
     @Transactional
@@ -42,7 +45,8 @@ public class OrderCreateHelper {
         Restaurant restaurant = checkRestaurantExists(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
         // application service calls the domain service for validation and creates an event
-        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
+        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant,
+                orderCreatedEventPublisher);
         saveOrder(order);
         log.info("Order creation Successful");
         return orderCreatedEvent;
