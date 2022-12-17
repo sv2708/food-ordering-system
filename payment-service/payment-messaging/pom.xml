@@ -10,7 +10,24 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>payment-messaging</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>payment-application-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>kafka-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>kafka-producer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>kafka-consumer</artifactId>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

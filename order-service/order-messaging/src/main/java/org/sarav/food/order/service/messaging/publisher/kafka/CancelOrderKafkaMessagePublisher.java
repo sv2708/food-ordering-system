@@ -6,6 +6,7 @@ import org.sarav.food.order.service.app.config.OrderServiceConfigData;
 import org.sarav.food.order.service.app.ports.output.message.publisher.payment.OrderCancelledPaymentRequestMessagePublisher;
 import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
 import org.sarav.food.order.service.messaging.mapper.OrderMessagingDataMapper;
+import org.sarav.food.order.system.kafka.KafkaMesssageHelper;
 import org.sarav.food.order.system.kafka.service.KafkaProducer;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,13 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer;
     private final OrderMessagingDataMapper orderMessagingDataMapper;
-    private final OrderKafkaMesssageHelper orderKafkaMesssageHelper;
+    private final KafkaMesssageHelper kafkaMesssageHelper;
 
-    public CancelOrderKafkaMessagePublisher(OrderServiceConfigData orderServiceConfigData, KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer, OrderMessagingDataMapper orderMessagingDataMapper, OrderKafkaMesssageHelper orderKafkaMesssageHelper) {
+    public CancelOrderKafkaMessagePublisher(OrderServiceConfigData orderServiceConfigData, KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer, OrderMessagingDataMapper orderMessagingDataMapper, KafkaMesssageHelper kafkaMesssageHelper) {
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
         this.orderMessagingDataMapper = orderMessagingDataMapper;
-        this.orderKafkaMesssageHelper = orderKafkaMesssageHelper;
+        this.kafkaMesssageHelper = kafkaMesssageHelper;
     }
 
     /**
@@ -40,7 +41,7 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
             kafkaProducer.sendMessage(topicName,
                     orderId,
                     paymentRequestAvroModel,
-                    orderKafkaMesssageHelper.getKafkaCallback(topicName, paymentRequestAvroModel, orderId, "PaymentRequestAvroModel")
+                    kafkaMesssageHelper.getKafkaCallback(topicName, paymentRequestAvroModel, orderId, "PaymentRequestAvroModel")
             );
             log.info("Order Cancelled Event message successfully sent for Order Id {} on topic {}",
                     paymentRequestAvroModel.getOrderId(), topicName);
