@@ -50,6 +50,11 @@
             </dependency>
             <dependency>
                 <groupId>org.sarav</groupId>
+                <artifactId>payment-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sarav</groupId>
                 <artifactId>order-application</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -103,7 +103,7 @@ public class PaymentRequestHelper {
 
 
     private List<CreditHistory> getCreditHistories(CustomerId customerId) {
-        var creditHistories = creditHistoryRepository.findByCustomerId(customerId.getValue());
+        var creditHistories = creditHistoryRepository.findByCustomerId(customerId);
         if (creditHistories.isEmpty()) {
             log.error("Could find Credit History for customer: {}", customerId.getValue());
             throw new PaymentApplicationServiceException("Could find Credit History for customer: " + customerId.getValue());
@@ -112,7 +112,7 @@ public class PaymentRequestHelper {
     }
 
     private CreditEntry getCreditEntry(CustomerId customerId) {
-        var creditEntry = creditEntryRepository.findByCustomerId(customerId.getValue());
+        var creditEntry = creditEntryRepository.findByCustomerId(customerId);
         if (creditEntry.isEmpty()) {
             log.error("Could find credit entry for customer: {}", customerId.getValue());
             throw new PaymentApplicationServiceException("Could find credit entry for customer: " + customerId.getValue());
