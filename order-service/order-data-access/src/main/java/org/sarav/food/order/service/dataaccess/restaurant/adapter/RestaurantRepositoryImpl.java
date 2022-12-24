@@ -1,10 +1,10 @@
 package org.sarav.food.order.service.dataaccess.restaurant.adapter;
 
 import org.sarav.food.order.service.app.ports.output.repository.RestaurantRepository;
-import org.sarav.food.order.service.dataaccess.restaurant.entity.RestaurantEntity;
 import org.sarav.food.order.service.dataaccess.restaurant.mapper.RestaurantEntityDataMapper;
-import org.sarav.food.order.service.dataaccess.restaurant.repository.RestaurantJpaRepository;
 import org.sarav.food.order.service.domain.entity.Restaurant;
+import org.sarav.food.service.dataaccess.entity.RestaurantEntity;
+import org.sarav.food.service.dataaccess.repository.RestaurantJpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

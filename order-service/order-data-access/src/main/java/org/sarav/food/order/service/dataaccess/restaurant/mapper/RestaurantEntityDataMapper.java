@@ -1,12 +1,12 @@
 package org.sarav.food.order.service.dataaccess.restaurant.mapper;
 
-import org.sarav.food.order.service.dataaccess.restaurant.entity.RestaurantEntity;
-import org.sarav.food.order.service.dataaccess.restaurant.exception.RestaurantDataAccessException;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
 import org.sarav.food.order.system.domain.valueobjects.Money;
 import org.sarav.food.order.system.domain.valueobjects.ProductId;
 import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
+import org.sarav.food.service.dataaccess.entity.RestaurantEntity;
+import org.sarav.food.service.dataaccess.exception.RestaurantDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EntityScan(basePackages = "org.sarav.food.order")
-@EnableJpaRepositories(basePackages = "org.sarav.food.order")
+@EntityScan(basePackages = {"org.sarav.food.order", "org.sarav.food.service.dataaccess"})
+@EnableJpaRepositories(basePackages = {"org.sarav.food.order", "org.sarav.food.service.dataaccess"})
 @SpringBootApplication(scanBasePackages = "org.sarav.food.order")
 public class OrderServiceApplication {
     public static void main(String[] args) {

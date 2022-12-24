@@ -6,7 +6,7 @@ import org.sarav.food.order.service.app.config.OrderServiceConfigData;
 import org.sarav.food.order.service.app.ports.output.message.publisher.restaurantapproval.OrderPaidRestaurantRequestMessagePublisher;
 import org.sarav.food.order.service.domain.event.OrderPaidEvent;
 import org.sarav.food.order.service.messaging.mapper.OrderMessagingDataMapper;
-import org.sarav.food.order.system.kafka.KafkaMesssageHelper;
+import org.sarav.food.order.system.kafka.KafkaMessageHelper;
 import org.sarav.food.order.system.kafka.service.KafkaProducer;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +17,16 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer;
     private final OrderMessagingDataMapper orderMessagingDataMapper;
-    private final KafkaMesssageHelper kafkaMesssageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public PayOrderKafkaMessagePublisher(OrderServiceConfigData orderServiceConfigData,
                                          KafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer,
                                          OrderMessagingDataMapper orderMessagingDataMapper,
-                                         KafkaMesssageHelper kafkaMesssageHelper) {
+                                         KafkaMessageHelper kafkaMessageHelper) {
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
         this.orderMessagingDataMapper = orderMessagingDataMapper;
-        this.kafkaMesssageHelper = kafkaMesssageHelper;
+        this.kafkaMessageHelper = kafkaMessageHelper;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
             kafkaProducer.sendMessage(topicName,
                     orderId,
                     restaurantApprovalRequestAvroModel,
-                    kafkaMesssageHelper.getKafkaCallback(topicName, restaurantApprovalRequestAvroModel, orderId, "RestaurantApprovalRequestAvroModel")
+                    kafkaMessageHelper.getKafkaCallback(topicName, restaurantApprovalRequestAvroModel, orderId, "RestaurantApprovalRequestAvroModel")
             );
             log.info("Successfully published message to kafka topic {} for order {} ", topicName, orderId);
         } catch (Exception e) {

@@ -2,7 +2,7 @@ package org.sarav.food.payment.service.messaging.publisher.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.PaymentResponseAvroModel;
-import org.sarav.food.order.system.kafka.KafkaMesssageHelper;
+import org.sarav.food.order.system.kafka.KafkaMessageHelper;
 import org.sarav.food.order.system.kafka.service.KafkaProducer;
 import org.sarav.food.payment.service.app.config.PaymentServiceConfigData;
 import org.sarav.food.payment.service.app.ports.output.message.publisher.PaymentCompletedMessagePublisher;
@@ -17,13 +17,13 @@ public class PaymentCompletedMessagePublisherImpl implements PaymentCompletedMes
     private final PaymentMessagingDataMapper paymentMessagingDataMapper;
     private final KafkaProducer<String, PaymentResponseAvroModel> paymentResponseAvroModelKafkaProducer;
     private final PaymentServiceConfigData paymentServiceConfigData;
-    private final KafkaMesssageHelper kafkaMesssageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
-    public PaymentCompletedMessagePublisherImpl(PaymentMessagingDataMapper paymentMessagingDataMapper, KafkaProducer<String, PaymentResponseAvroModel> paymentResponseAvroModelKafkaProducer, PaymentServiceConfigData paymentServiceConfigData, KafkaMesssageHelper kafkaMesssageHelper) {
+    public PaymentCompletedMessagePublisherImpl(PaymentMessagingDataMapper paymentMessagingDataMapper, KafkaProducer<String, PaymentResponseAvroModel> paymentResponseAvroModelKafkaProducer, PaymentServiceConfigData paymentServiceConfigData, KafkaMessageHelper kafkaMessageHelper) {
         this.paymentMessagingDataMapper = paymentMessagingDataMapper;
         this.paymentResponseAvroModelKafkaProducer = paymentResponseAvroModelKafkaProducer;
         this.paymentServiceConfigData = paymentServiceConfigData;
-        this.kafkaMesssageHelper = kafkaMesssageHelper;
+        this.kafkaMessageHelper = kafkaMessageHelper;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PaymentCompletedMessagePublisherImpl implements PaymentCompletedMes
         PaymentResponseAvroModel paymentResponseAvroModel = paymentMessagingDataMapper.paymentEventToPaymentResponseAvroModel(paymentCompletedEvent);
         paymentResponseAvroModelKafkaProducer.sendMessage(paymentServiceConfigData.getPaymentResponseTopicName(),
                 orderId, paymentResponseAvroModel,
-                kafkaMesssageHelper.getKafkaCallback(paymentServiceConfigData.getPaymentResponseTopicName(),
+                kafkaMessageHelper.getKafkaCallback(paymentServiceConfigData.getPaymentResponseTopicName(),
                         paymentResponseAvroModel, orderId,
                         "PaymentResponseAvroModel")
         );
