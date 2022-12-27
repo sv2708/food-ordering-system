@@ -5,6 +5,7 @@ import org.sarav.food.order.service.dataaccess.order.mapper.OrderEntityDataMappe
 import org.sarav.food.order.service.dataaccess.order.repository.OrderJpaRepository;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.valueobjects.TrackingId;
+import org.sarav.food.order.system.domain.valueobjects.OrderId;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -25,6 +26,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     public Order save(Order order) {
         var savedOrderEntity = orderJpaRepository.save(orderEntityDataMapper.OrderToOrderEntity(order));
         return orderEntityDataMapper.orderEntityToOrder(savedOrderEntity);
+    }
+
+    @Override
+    public Optional<Order> findById(OrderId orderId) {
+        return orderJpaRepository.findById(orderId.getValue()).map(orderEntityDataMapper::orderEntityToOrder);
     }
 
     @Override

@@ -160,9 +160,9 @@ public class Order extends AggregateRoot<OrderId> {
 
     public void initCancel(List<String> failureMessages) {
         if (this.orderStatus != OrderStatus.PAID) {
-            throw new OrderDomainException("Order is not in right status to change to CANCELLING state");
+            throw new OrderDomainException("Order is not in right status to change to CANCELLED state");
         }
-        this.orderStatus = OrderStatus.CANCELLING;
+        this.orderStatus = OrderStatus.CANCELLED;
         updateFailureMessages(failureMessages);
     }
 
@@ -178,7 +178,7 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     public void cancel(List<String> failureMessages) {
-        if (this.orderStatus != OrderStatus.CANCELLED || this.orderStatus != OrderStatus.PENDING) {
+        if (this.orderStatus == OrderStatus.CANCELLED || this.orderStatus != OrderStatus.PENDING) {
             throw new OrderDomainException("Order is not in right status to change to CANCELLING state");
         }
         this.orderStatus = OrderStatus.CANCELLED;

@@ -1,4 +1,4 @@
-package org.sarav.food.order.service.app.ports;
+package org.sarav.food.order.service.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;
@@ -22,7 +22,7 @@ public class OrderCreateCommandHandler {
         this.orderCreatedPaymentRequestMessagePublisher = orderCreatedPaymentRequestMessagePublisher;
     }
 
-    public CreateOrderResponse handleCreateOrder(CreateOrderCommand createOrderCommand){
+    public CreateOrderResponse handleCreateOrder(CreateOrderCommand createOrderCommand) {
         OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
         orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
         return orderDataMapper.convertOrderToCreateOrderResponse(orderCreatedEvent.getOrder());

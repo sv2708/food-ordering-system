@@ -1,4 +1,4 @@
-package org.sarav.food.order.service.app.ports;
+package org.sarav.food.order.service.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.track.TrackOrderQuery;
@@ -26,9 +26,9 @@ public class OrderTrackCommandHandler {
     }
 
     @Transactional(readOnly = true)
-    public TrackOrderResponse trackOrder(TrackOrderQuery trackOrderQuery){
+    public TrackOrderResponse trackOrder(TrackOrderQuery trackOrderQuery) {
         Optional<Order> orderResult = orderRepository.findByTrackingId(new TrackingId(trackOrderQuery.getTrackingOrderId()));
-        if(orderResult.isEmpty()){
+        if (orderResult.isEmpty()) {
             log.warn("Order not found for tracking order {}", trackOrderQuery.getTrackingOrderId());
             throw new OrderNotFoundException("Order Not found for tracking order " + trackOrderQuery.getTrackingOrderId());
         }

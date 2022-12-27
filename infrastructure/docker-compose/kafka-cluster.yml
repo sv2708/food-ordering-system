@@ -1,91 +1,85 @@
-version: "3.7"
-
+version: '3.7'
 services:
-
-  schemaregistry:
-    image: confluentinc/cp-schema-registry:${KAFKA_VERSION:-latest}
-    hostname: schema-registry-service
+  schema-registry:
+    image: confluentinc/cp-schema-registry:${KAFKA_VERSION}
+    hostname: schema-registry
     depends_on:
-      - broker-1
-      - broker-2
-      - broker-3
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
     ports:
       - "8081:8081"
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
-      SCHEMA_REGISTRY_HOST_NAME: schemaregistry
-      SCHEMA_REGISTRY_LISTENERS: "http://schemaregistry:8081"
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker-1:9091, LISTENER_LOCAL://localhost:19091
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-broker-2:9092,LISTENER_LOCAL://localhost:29092
       SCHEMA_REGISTRY_DEBUG: 'true'
     networks:
       - ${GLOBAL_NETWORK:-kafka}
-  
-  broker-1:
+  kafka-broker-1:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
-    hostname: broker-1
-    ports:
-      - "19091:19091"
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:9091,PLAINTEXT_HOST://localhost:19091
-      KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_COMPRESSION_TYPE: producer
-      KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
-    volumes:
-      - 'food-order-kafka-volume-broker1:/var/lib/kafka/data'
-    networks:
-      - ${GLOBAL_NETWORK:-kafka}
-
-  broker-2:
-    image: confluentinc/cp-kafka:${KAFKA_VERSION}
-    hostname: broker-2
+    hostname: kafka-broker-1
     ports:
       - "19092:19092"
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-1:9092,LISTENER_LOCAL://localhost:19092
+      #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-2:9092,PLAINTEXT_HOST://localhost:19092
-      KAFKA_BROKER_ID: 2
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_COMPRESSION_TYPE: producer
-      KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
     volumes:
-      - 'food-order-kafka-volume-broker2:/var/lib/kafka/data'
+      - "food-order-kafka-volume-broker1:/var/lib/kafka/data"
     networks:
       - ${GLOBAL_NETWORK:-kafka}
-
-  broker-3:
+  kafka-broker-2:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
-    hostname: broker-3
+    hostname: kafka-broker-2
     ports:
-      - "19093:19093"
+      - "29092:29092"
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-2:9092,LISTENER_LOCAL://localhost:29092
+      #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-3:9093,PLAINTEXT_HOST://localhost:19093
-      KAFKA_BROKER_ID: 3
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_COMPRESSION_TYPE: producer
-      KAFKA_SCHEMA_REGISTRY_URL: "schemaregistry:8081"
     volumes:
-      - 'food-order-kafka-volume-broker3:/var/lib/kafka/data'
+      - "food-order-kafka-volume-broker2:/var/lib/kafka/data"
     networks:
       - ${GLOBAL_NETWORK:-kafka}
-
-  kafka_manager:
+  kafka-broker-3:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    hostname: kafka-broker-3
+    ports:
+      - "39092:39092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-3:9092,LISTENER_LOCAL://localhost:39092
+      #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_COMPRESSION_TYPE: producer
+    volumes:
+      - "food-order-kafka-volume-broker3:/var/lib/kafka/data"
+    networks:
+      - ${GLOBAL_NETWORK:-kafka}
+  kafka-manager:
     image: hlebalbau/kafka-manager:stable
+    restart: always
     ports:
       - "9000:9000"
     environment:
       ZK_HOSTS: "zookeeper:2181"
     networks:
       - ${GLOBAL_NETWORK:-kafka}
-
 
 volumes:
   food-order-kafka-volume-broker1:

@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>org.sarav</groupId>
+            <artifactId>saga</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
             <artifactId>common-domain</artifactId>
         </dependency>
         <dependency>
