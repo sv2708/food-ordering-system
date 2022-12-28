@@ -68,7 +68,9 @@ public class OrderEntityDataMapper {
 
     private DeliveryAddress convertAddressEntityToAddress(OrderAddressEntity address) {
 
-        return DeliveryAddress.newBuilder().addressLine1(address.getAddressLine1())
+        return DeliveryAddress.newBuilder()
+                .id(address.getId())
+                .addressLine1(address.getAddressLine1())
                 .addressLine2(address.getAddressLine2()).city(address.getCity())
                 .zipcode(address.getZipcode()).build();
 

@@ -145,14 +145,14 @@ public class Order extends AggregateRoot<OrderId> {
 
     public void pay() {
         if (this.orderStatus != OrderStatus.PENDING) {
-            throw new OrderDomainException("Order is not in right status to change to PAID state");
+            throw new OrderDomainException("Order is not in right status to change to PAID state." + " Current State: " + this.orderStatus.toString());
         }
         this.orderStatus = OrderStatus.PAID;
     }
 
     public void approve() {
         if (this.orderStatus != OrderStatus.PAID) {
-            throw new OrderDomainException("Order is not in right status to change to APPROVED state");
+            throw new OrderDomainException("Order is not in right status to change to APPROVED state" + " Current State: " + this.orderStatus.toString());
         }
         this.orderStatus = OrderStatus.APPROVED;
         updateFailureMessages(failureMessages);
@@ -160,7 +160,7 @@ public class Order extends AggregateRoot<OrderId> {
 
     public void initCancel(List<String> failureMessages) {
         if (this.orderStatus != OrderStatus.PAID) {
-            throw new OrderDomainException("Order is not in right status to change to CANCELLED state");
+            throw new OrderDomainException("Order is not in right status to change to CANCELLED state" + "Current State: " + this.orderStatus.toString());
         }
         this.orderStatus = OrderStatus.CANCELLED;
         updateFailureMessages(failureMessages);
@@ -178,8 +178,10 @@ public class Order extends AggregateRoot<OrderId> {
     }
 
     public void cancel(List<String> failureMessages) {
-        if (this.orderStatus == OrderStatus.CANCELLED || this.orderStatus != OrderStatus.PENDING) {
-            throw new OrderDomainException("Order is not in right status to change to CANCELLING state");
+        if (this.orderStatus == OrderStatus.CANCELLED ||
+                this.orderStatus != OrderStatus.PAID ||
+                this.orderStatus != OrderStatus.PENDING) {
+            throw new OrderDomainException("Order is not in right status to change to CANCELLING state" + " Current State: " + this.orderStatus.toString());
         }
         this.orderStatus = OrderStatus.CANCELLED;
         this.updateFailureMessages(failureMessages);

@@ -18,8 +18,8 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 
     @Override
     public void completePayment(PaymentRequest paymentRequest) {
-        PaymentEvent paymentEvent = paymentRequestHelper.persistPayment(paymentRequest);
-        fireEvent(paymentEvent);
+        PaymentEvent paymentCompletedEvent = paymentRequestHelper.persistPayment(paymentRequest);
+        fireEvent(paymentCompletedEvent);
     }
 
     @Override

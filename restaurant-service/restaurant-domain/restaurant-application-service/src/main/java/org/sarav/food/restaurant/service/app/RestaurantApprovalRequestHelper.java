@@ -11,14 +11,13 @@ import org.sarav.food.restaurant.service.app.ports.output.repository.RestaurantR
 import org.sarav.food.restaurant.service.domain.RestaurantDomainService;
 import org.sarav.food.restaurant.service.domain.entity.Restaurant;
 import org.sarav.food.restaurant.service.domain.event.OrderApprovalEvent;
+import org.sarav.food.restaurant.service.domain.exception.RestaurantDomainException;
 import org.sarav.food.restaurant.service.domain.exception.RestaurantNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -80,6 +79,13 @@ public class RestaurantApprovalRequestHelper {
                 }));
         restaurant.getOrderDetail().setId(new OrderId(UUID.fromString(restaurantApprovalRequest.getOrderId())));
 
+        Set<UUID> restaurantEntityProductIds = restaurantEntity.getOrderDetail().getProducts()
+                .stream().map(product -> product.getId().getValue()).collect(Collectors.toSet());
+
+        if (restaurant.getOrderDetail().getProducts().size() != restaurantEntityProductIds.size()) {
+            throw new RestaurantDomainException("Not all Products in the Order " + restaurant.getOrderDetail().getId().getValue()
+                    + " are available in the Restaurant " + restaurant.getId().getValue());
+        }
         return restaurant;
     }
 }

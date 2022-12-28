@@ -33,6 +33,7 @@ public class OrderMessagingDataMapper {
 
         return PaymentRequestAvroModel.newBuilder()
                 .setCreatedAt(orderCancelledEvent.getCreatedAt().toInstant())
+                .setCustomerId(orderCancelledEvent.getOrder().getCustomerId().getValue().toString())
                 .setOrderId(orderCancelledEvent.getOrder().getId().getValue().toString())
                 .setId(UUID.randomUUID().toString())
                 .setOrderPaymentStatus(OrderPaymentStatus.ORDER_CANCELLED)
@@ -52,7 +53,7 @@ public class OrderMessagingDataMapper {
                 .setRestaurantId(domainEvent.getOrder().getRestaurantId().getValue().toString())
                 .setCreatedAt(domainEvent.getCreatedAt().toInstant())
                 .setProducts(domainEvent.getOrder().getItems().stream().map(orderItem -> Product.newBuilder()
-                        .setId(orderItem.getId().getValue().toString())
+                        .setId(orderItem.getProduct().getId().getValue().toString())
                         .setQuantity(orderItem.getQuantity())
                         .build()
                 ).collect(Collectors.toList()))

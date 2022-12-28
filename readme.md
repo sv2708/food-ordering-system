@@ -4,7 +4,7 @@ Its a multi-module maven project
 
 ### Project Structure
 
-![Project Structure](project-structure.png)
+![Project Structure](docs/project-structure.png)
 
 ## Common
 
@@ -96,3 +96,25 @@ HTTP Client -> OrderController -> OrderApplicationServiceImpl -> OrderDomainServ
 
 After Persistence, OrderDomainService returns OrderCreatedEvent -> CreateOrderKafkaMessagePublisher -> Returns Response
 to user
+
+SAGA Implementation
+![Project Structure](docs/saga.png)
+
+#### Happy Flow:
+
+1) Customer Places the Order. Order status will be initialized to `PENDING`.
+2) PaymentRequest will be sent to PaymentService.(
+   Entrypoint: [PaymentRequestKafkaListener.java](payment-service/payment-messaging/src/main/java/org/sarav/food/payment/service/messaging/listener/kafka/PaymentRequestKafkaListener.java))
+3) PaymentCompleted response will be sent back to OrderService
+4) Order status will be updated to `PAID`.
+5) RestaurantApproval will be sent to RestaurantService(
+   Entrypoint: [RestaurantApprovalRequestKafkaListener.java](restaurant-service/restaurant-messaging/src/main/java/org/sarav/food/restaurant/service/messaging/listener/kafka/RestaurantApprovalRequestKafkaListener.java))
+6) RestaurantService will send back OrderApproved response to OrderService
+7) Order Status will be updated to `APPROVED`.
+
+#### Order could get cancelled if
+
+1) any order items are not available in the restaurant.
+2) Right now it throws OrderDomainException if Product id is invalid.
+
+### Need to handle credit entry and customer balances.

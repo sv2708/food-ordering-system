@@ -21,6 +21,7 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
         if (orderDetail.getOrderStatus() != OrderStatus.PAID) {
             failureMessages.add("Payment is not completed for order: " + orderDetail.getId());
         }
+
         Money totalAmount = orderDetail.getProducts().stream().map(product -> {
             if (!product.isAvailable()) {
                 failureMessages.add("Product with id: " + product.getId().getValue()

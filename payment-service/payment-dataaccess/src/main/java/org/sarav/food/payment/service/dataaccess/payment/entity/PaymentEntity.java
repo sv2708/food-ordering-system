@@ -22,7 +22,7 @@ public class PaymentEntity {
     private UUID id;
     private UUID customerId;
     private UUID orderId;
-    private BigDecimal price;
+    private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
     private ZonedDateTime createdAt;

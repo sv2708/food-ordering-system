@@ -25,13 +25,6 @@
       }
     },
     {
-      "name": "customerId",
-      "type": {
-        "type": "string",
-        "logicalType": "uuid"
-      }
-    },
-    {
       "name": "orderId",
       "type": {
         "type": "string",
@@ -43,15 +36,6 @@
       "type": {
         "type": "long",
         "logicalType": "timestamp-millis"
-      }
-    },
-    {
-      "name": "price",
-      "type": {
-        "type": "bytes",
-        "logicalType": "decimal",
-        "precision": 10,
-        "scale": 2
       }
     },
     {

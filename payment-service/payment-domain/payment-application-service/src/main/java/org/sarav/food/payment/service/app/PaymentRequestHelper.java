@@ -55,7 +55,6 @@ public class PaymentRequestHelper {
     }
 
     public PaymentEvent persistPayment(PaymentRequest paymentRequestModel) {
-
         Payment payment = paymentDataMapper.paymentRequestToPayment(paymentRequestModel);
         CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
         List<CreditHistory> creditHistories = getCreditHistories(payment.getCustomerId());

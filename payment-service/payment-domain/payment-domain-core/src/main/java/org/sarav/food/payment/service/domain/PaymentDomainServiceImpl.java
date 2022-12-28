@@ -34,11 +34,11 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
 
         payment.validatePayment(failureMessages);
         payment.initializePayment(); // set id and createdAt fields
-        if (validateCreditEntry(payment, creditEntry, failureMessages)) {
-            subtractCreditEntry(payment, creditEntry);
-            updateCreditHistory(payment, TransactionType.DEBIT, creditHistoryEntries);
-            validateCreditHistory(payment, creditEntry, creditHistoryEntries, failureMessages);
-        }
+//        if (validateCreditEntry(payment, creditEntry, failureMessages)) {
+//            subtractCreditEntry(payment, creditEntry);
+//            updateCreditHistory(payment, TransactionType.DEBIT, creditHistoryEntries);
+//            validateCreditHistory(payment, creditEntry, creditHistoryEntries, failureMessages);
+//        }
         if (failureMessages.size() == 0) {
             payment.updateStatus(PaymentStatus.COMPLETED);
             return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)),

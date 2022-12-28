@@ -36,6 +36,7 @@ public class OrderDetail extends BaseEntity<OrderId> {
         return products;
     }
 
+
     public static final class Builder {
         private OrderId orderId;
         private OrderStatus orderStatus;

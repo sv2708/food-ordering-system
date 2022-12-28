@@ -56,7 +56,8 @@
           "COMPLETED",
           "PENDING",
           "FAILED",
-          "ORDER_CANCELLED"
+          "ORDER_CANCELLED",
+          "CANCELLED"
         ]
       }
     }

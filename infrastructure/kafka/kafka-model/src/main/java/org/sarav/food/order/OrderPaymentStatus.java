@@ -6,8 +6,8 @@
 package org.sarav.food.order;
 @org.apache.avro.specific.AvroGenerated
 public enum OrderPaymentStatus implements org.apache.avro.generic.GenericEnumSymbol<OrderPaymentStatus> {
-  COMPLETED, PENDING, FAILED, ORDER_CANCELLED  ;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"OrderPaymentStatus\",\"namespace\":\"org.sarav.food.order\",\"symbols\":[\"COMPLETED\",\"PENDING\",\"FAILED\",\"ORDER_CANCELLED\"]}");
+  COMPLETED, PENDING, FAILED, ORDER_CANCELLED, CANCELLED  ;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"OrderPaymentStatus\",\"namespace\":\"org.sarav.food.order\",\"symbols\":[\"COMPLETED\",\"PENDING\",\"FAILED\",\"ORDER_CANCELLED\",\"CANCELLED\"]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
 }
