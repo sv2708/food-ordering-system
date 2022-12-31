@@ -169,3 +169,64 @@ CREATE trigger refresh_order_restaurant_m_view
     ON restaurant.restaurant_products
     FOR each statement
 EXECUTE PROCEDURE restaurant.refresh_order_restaurant_m_view();
+
+
+drop type if exists SAGA_STATUS;
+create type SAGA_STATUS as enum ('STARTED', 'FAILED', 'SUCCEEDED', 'PROCESSING', 'COMPENSATING', 'COMPENSATED');
+
+drop type if exists OUTBOX_STATUS;
+create type OUTBOX_STATUS as enum ('STARTED','PROCESSING', 'COMPLETED');
+
+
+drop table if exists "order".payment_outbox cascade;
+
+create table "order".payment_outbox
+(
+    id uuid not null,
+    saga_id uuid not null,
+    created_at TIMESTAMP with TIME ZONE not null,
+    processed_at TIMESTAMP with TIME ZONE not null,
+    type character varying collate "pg_catalog".default not null,
+    payload jsonb not null,
+    outbox_status outbox_status not null,
+    saga_status saga_status not null,
+    order_status order_status not null,
+    version integer not null,
+    constraint payment_outbox_pkey primary key (id)
+)
+
+
+create index "payment_outbox_order_saga_status"
+    on "order".payment_outbox
+        (type, outbox_status, saga_status);
+
+create unique index "payment_outbox_saga_id"
+    on "order".payment_outbox
+        (type, saga_id, saga_status);
+
+drop table if exists "order".restaurant_approval_outbox cascade;
+
+create table "order".restaurant_approval_outbox
+(
+    id uuid not null,
+    saga_id uuid not null,
+    created_at TIMESTAMP with TIME ZONE not null,
+    processed_at TIMESTAMP with TIME ZONE not null,
+    type character varying collate "pg_catalog".default not null,
+    payload jsonb not null,
+    outbox_status outbox_status not null,
+    saga_status saga_status not null,
+    order_status order_status not null,
+    version integer not null,
+    constraint payment_outbox_pkey primary key (id)
+)
+
+
+create index "restaurant_approval_outbox_order_saga_status"
+    on "order".payment_outbox
+        (type, outbox_status, saga_status);
+
+create unique index "restaurant_approval_outbox_saga_id"
+    on "order".payment_outbox
+        (type, saga_id, saga_status);
+
