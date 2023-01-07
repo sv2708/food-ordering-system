@@ -10,6 +10,8 @@ order-service:
   payment-response-topic-name: payment-response
   restaurant-approval-request-topic-name: restaurant-approval-request
   restaurant-approval-response-topic-name: restaurant-approval-response
+  outbox-scheduler-fixed-delay: 1000
+  outbox-scheduler-initial-delay: 1000
 spring:
   jpa:
     open-in-view: false

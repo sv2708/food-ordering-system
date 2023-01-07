@@ -193,7 +193,7 @@ create table "order".payment_outbox
     order_status order_status not null,
     version integer not null,
     constraint payment_outbox_pkey primary key (id)
-)
+);
 
 
 create index "payment_outbox_order_saga_status"

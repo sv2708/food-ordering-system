@@ -5,6 +5,8 @@ import org.sarav.food.order.service.app.ports.output.repository.OrderRepository;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.exception.OrderNotFoundException;
 import org.sarav.food.order.system.domain.valueobjects.OrderId;
+import org.sarav.food.order.system.domain.valueobjects.OrderStatus;
+import org.sarav.food.order.system.saga.SagaStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -32,5 +34,23 @@ public class OrderSagaHelper {
         }
         return orderOptional.get();
     }
+
+    public SagaStatus orderStatusToSagaStatus(OrderStatus orderStatus) {
+
+        switch (orderStatus) {
+            case PAID:
+                return SagaStatus.PROCESSING; // payment service returns Payment Completed event
+            case APPROVED:
+                return SagaStatus.SUCCEEDED; // payment done and restaurant approved after that
+            case CANCELLING:
+                return SagaStatus.COMPENSATING; // compensating transactions will be executed in payment service to refund on order cancel
+            case CANCELLED:
+                return SagaStatus.COMPENSATED; // previous steps are rolled back
+            default:
+                return SagaStatus.STARTED;
+        }
+
+    }
+
 
 }

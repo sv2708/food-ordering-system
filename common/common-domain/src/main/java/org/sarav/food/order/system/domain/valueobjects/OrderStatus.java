@@ -6,6 +6,10 @@ public enum OrderStatus {
     SHIPPED,
     CANCELLED,
     CANCELLING,
+    /**
+     * CANCELLING -> when order service publishes order cancelled event,
+     * it needs to be processed by payment service before setting CANCELLED
+     */
     PAID,
     APPROVED
 
