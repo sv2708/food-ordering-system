@@ -6,14 +6,13 @@ import org.sarav.food.order.service.app.ports.output.message.publisher.payment.O
 import org.sarav.food.order.service.domain.OrderDomainService;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
-import org.sarav.food.order.system.domain.event.EmptyEvent;
 import org.sarav.food.order.system.saga.SagaStep;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
-public class OrderApprovalSagaStep implements SagaStep<RestaurantApprovalResponse, EmptyEvent, OrderCancelledEvent> {
+public class OrderApprovalSagaStep implements SagaStep<RestaurantApprovalResponse> {
 
     private final OrderSagaHelper orderSagaHelper;
     private final OrderCancelledPaymentRequestMessagePublisher orderCancelledPaymentRequestMessagePublisher;
@@ -29,24 +28,22 @@ public class OrderApprovalSagaStep implements SagaStep<RestaurantApprovalRespons
 
     @Transactional
     @Override
-    public EmptyEvent success(RestaurantApprovalResponse data) {
+    public void success(RestaurantApprovalResponse data) {
         log.info("Approving Order {}", data.getOrderId());
         Order order = orderSagaHelper.findOrder(data.getOrderId());
         orderDomainService.approveOrder(order);
         orderSagaHelper.saveOrder(order);
         log.info("Approved the Order {} ", data.getOrderId());
-        return EmptyEvent.getInstance();
     }
 
     @Transactional
     @Override
-    public OrderCancelledEvent rollback(RestaurantApprovalResponse data) {
+    public void rollback(RestaurantApprovalResponse data) {
         log.info("Cancelling the Order {}", data.getOrderId());
         Order order = orderSagaHelper.findOrder(data.getOrderId());
         //compensating txn to cancel the order and trigger payment refund
-        OrderCancelledEvent orderCancelledEvent = orderDomainService.cancelOrderPayment(order, data.getFailureMessages(), orderCancelledPaymentRequestMessagePublisher);
+        OrderCancelledEvent orderCancelledEvent = orderDomainService.cancelOrderPayment(order, data.getFailureMessages());
         orderSagaHelper.saveOrder(order);
         log.info("Cancelled the Order {}", data.getOrderId());
-        return orderCancelledEvent;
     }
 }

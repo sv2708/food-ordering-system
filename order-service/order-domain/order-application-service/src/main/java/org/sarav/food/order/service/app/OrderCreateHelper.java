@@ -45,8 +45,7 @@ public class OrderCreateHelper {
         Restaurant restaurant = checkRestaurantExists(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
         // application service calls the domain service for validation and creates an event
-        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant,
-                orderCreatedEventPublisher);
+        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(order, restaurant);
         saveOrder(order);
         log.info("Order creation Successful");
         return orderCreatedEvent;

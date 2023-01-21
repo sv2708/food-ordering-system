@@ -3,7 +3,6 @@ package org.sarav.food.order.service.app;
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.message.RestaurantApprovalResponse;
 import org.sarav.food.order.service.app.ports.input.message.listener.restaurantapproval.RestaurantApprovalResponseMessageListener;
-import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -29,9 +28,9 @@ public class RestaurantApprovalResponseMessageListenerImpl implements Restaurant
     @Override
     public void orderRejected(RestaurantApprovalResponse restaurantApprovalResponse) {
         log.info("Persisting Order Cancelled Info for Order {}", restaurantApprovalResponse.getOrderId());
-        OrderCancelledEvent orderCancelledEvent = orderApprovalSagaStep.rollback(restaurantApprovalResponse);
-        log.info("Publishing the Order Cancelled Event to refund the payment");
-        orderCancelledEvent.fire();
+        orderApprovalSagaStep.rollback(restaurantApprovalResponse);
+        log.info("Order Payment changes are rolled back to refund the payment for order {}",
+                restaurantApprovalResponse.getOrderId());
         log.info("Failure Messages for Order {} are {}", restaurantApprovalResponse.getOrderId(),
                 String.join(FAILURE_MSG_DELIMITER, restaurantApprovalResponse.getFailureMessages()));
     }

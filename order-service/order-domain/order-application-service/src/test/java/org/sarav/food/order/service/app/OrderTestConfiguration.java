@@ -2,7 +2,6 @@ package org.sarav.food.order.service.app;
 
 import org.mockito.Mockito;
 import org.sarav.food.order.service.app.ports.output.message.publisher.payment.OrderCancelledPaymentRequestMessagePublisher;
-import org.sarav.food.order.service.app.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher;
 import org.sarav.food.order.service.app.ports.output.message.publisher.restaurantapproval.OrderPaidRestaurantRequestMessagePublisher;
 import org.sarav.food.order.service.app.ports.output.repository.CustomerRepository;
 import org.sarav.food.order.service.app.ports.output.repository.OrderRepository;

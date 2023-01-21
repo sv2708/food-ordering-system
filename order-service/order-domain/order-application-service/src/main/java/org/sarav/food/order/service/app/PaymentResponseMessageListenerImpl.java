@@ -3,7 +3,6 @@ package org.sarav.food.order.service.app;
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.dto.message.PaymentResponse;
 import org.sarav.food.order.service.app.ports.input.message.listener.payment.PaymentResponseMessageListener;
-import org.sarav.food.order.service.domain.event.OrderPaidEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,9 +22,8 @@ public class PaymentResponseMessageListenerImpl implements PaymentResponseMessag
     @Override
     public void paymentCompleted(PaymentResponse paymentResponse) {
         log.info("Persisting the Order Status Changes for Order {} ", paymentResponse.getOrderId());
-        OrderPaidEvent orderPaidEvent = orderPaymentSagaStep.success(paymentResponse);
-        log.info("Publishing the Event for Order {} to restaurant for its approval", paymentResponse.getOrderId());
-        orderPaidEvent.fire();
+        orderPaymentSagaStep.success(paymentResponse);
+        log.info("Saga Successfully comleted for OrderPayment for order", paymentResponse.getOrderId());
     }
 
     @Override

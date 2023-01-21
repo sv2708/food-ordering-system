@@ -1,9 +1,13 @@
 package org.sarav.food.order.service.app.outbox.scheduler.payment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.sarav.food.order.service.app.outbox.model.payment.OrderPaymentEventPayload;
 import org.sarav.food.order.service.app.outbox.model.payment.OrderPaymentOutboxMessage;
 import org.sarav.food.order.service.app.ports.output.repository.PaymentOutboxRepository;
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
+import org.sarav.food.order.system.domain.valueobjects.OrderStatus;
 import org.sarav.food.order.system.outbox.OutboxStatus;
 import org.sarav.food.order.system.saga.SagaStatus;
 import org.springframework.stereotype.Component;
@@ -20,9 +24,11 @@ import static org.sarav.food.order.system.saga.order.SagaConstants.ORDER_SAGA_NA
 public class PaymentOutboxHelper {
 
     private final PaymentOutboxRepository paymentOutboxRepository;
+    private final ObjectMapper objectMapper;
 
-    public PaymentOutboxHelper(PaymentOutboxRepository paymentOutboxRepository) {
+    public PaymentOutboxHelper(PaymentOutboxRepository paymentOutboxRepository, ObjectMapper objectMapper) {
         this.paymentOutboxRepository = paymentOutboxRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Transactional(readOnly = true)
@@ -33,9 +39,9 @@ public class PaymentOutboxHelper {
     }
 
     @Transactional(readOnly = true)
-    public Optional<OrderPaymentOutboxMessage> getPaymentOutboxMessageBySagaIdAndSagaStatus(String type,
-                                                                                            UUID sagaId,
-                                                                                            SagaStatus sagaStatus) {
+    public Optional<OrderPaymentOutboxMessage> getPaymentOutboxMessageBySagaIdAndSagaStatus(
+            UUID sagaId,
+            SagaStatus sagaStatus) {
         return paymentOutboxRepository.findByTypeAndSagaIdAndSagaStatus(ORDER_SAGA_NAME, sagaId, sagaStatus);
     }
 
@@ -54,4 +60,34 @@ public class PaymentOutboxHelper {
                                                                       SagaStatus... sagaStatuses) {
         paymentOutboxRepository.deleteByTypeAndOutboxStatusAndSagaStatus(ORDER_SAGA_NAME, outboxStatus, sagaStatuses);
     }
+
+    public void savePaymentOutboxMessage(OrderPaymentEventPayload orderPaymentEventPayload, UUID sagaId,
+                                         OrderStatus orderStatus, SagaStatus sagaStatus, OutboxStatus outboxStatus) {
+        save(
+                OrderPaymentOutboxMessage.builder()
+                        .id(UUID.randomUUID())
+                        .createdAt(orderPaymentEventPayload.getCreatedAt())
+                        .sagaId(sagaId)
+                        .type(ORDER_SAGA_NAME)
+                        .orderStatus(orderStatus)
+                        .sagaStatus(sagaStatus)
+                        .outboxStatus(outboxStatus)
+                        .payload(createPayload(orderPaymentEventPayload))
+                        .build()
+        );
+    }
+
+    private String createPayload(OrderPaymentEventPayload orderPaymentEventPayload) {
+
+        try {
+            return objectMapper.writeValueAsString(orderPaymentEventPayload);
+        } catch (JsonProcessingException e) {
+            log.error("Error Occurred when processing JSON {}", e.getMessage());
+            throw new OrderDomainException("Error in OrderPaymentEventPayload"
+                    + orderPaymentEventPayload.getOrderId()
+                    + e.getMessage());
+        }
+
+    }
+
 }

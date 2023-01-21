@@ -5,20 +5,23 @@ import org.sarav.food.order.service.app.dto.create.CreateOrderResponse;
 import org.sarav.food.order.service.app.dto.create.OrderAddress;
 import org.sarav.food.order.service.app.dto.create.OrderItemEntity;
 import org.sarav.food.order.service.app.dto.track.TrackOrderResponse;
+import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventPayload;
+import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventProduct;
+import org.sarav.food.order.service.app.outbox.model.payment.OrderPaymentEventPayload;
 import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.OrderItem;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
+import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
+import org.sarav.food.order.service.domain.event.OrderPaidEvent;
 import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
-import org.sarav.food.order.system.domain.valueobjects.CustomerId;
-import org.sarav.food.order.system.domain.valueobjects.Money;
-import org.sarav.food.order.system.domain.valueobjects.ProductId;
-import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
+import org.sarav.food.order.system.domain.valueobjects.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderDataMapper {
@@ -83,4 +86,32 @@ public class OrderDataMapper {
                 .build();
     }
 
+    public OrderPaymentEventPayload orderCreatedEventToOrderPaymentEventPayload(OrderCreatedEvent orderCreatedEvent) {
+
+        return OrderPaymentEventPayload.builder()
+                .createdAt(orderCreatedEvent.getCreatedAt())
+                .orderId(orderCreatedEvent.getOrder().getId().getValue().toString())
+                .customerId(orderCreatedEvent.getOrder().getCustomerId().getValue().toString())
+                .amount(orderCreatedEvent.getOrder().getPrice().getAmount())
+                .paymentOrderStatus(PaymentStatus.PENDING.name())
+                .build();
+
+    }
+
+    public OrderApprovalEventPayload orderPaidEventToOrderApprovalEventPayload(OrderPaidEvent orderPaidEvent) {
+
+        return OrderApprovalEventPayload.builder()
+                .createdAt(orderPaidEvent.getCreatedAt())
+                .orderId(orderPaidEvent.getOrder().getId().getValue().toString())
+                .restaurantId(orderPaidEvent.getOrder().getRestaurantId().getValue().toString())
+                .restaurantApprovalStatus(RestaurantOrderStatus.PAID.name())
+                .products(orderPaidEvent.getOrder().getItems().stream()
+                        .map(orderItem -> OrderApprovalEventProduct.builder()
+                                .id(orderItem.getId().getValue().toString())
+                                .quantity(orderItem.getQuantity())
+                                .build()).collect(Collectors.toList()))
+                .price(orderPaidEvent.getOrder().getPrice().getAmount())
+                .build();
+
+    }
 }

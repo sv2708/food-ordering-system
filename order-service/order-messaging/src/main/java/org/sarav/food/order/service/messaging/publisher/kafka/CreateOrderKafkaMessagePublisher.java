@@ -3,16 +3,16 @@ package org.sarav.food.order.service.messaging.publisher.kafka;
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.PaymentRequestAvroModel;
 import org.sarav.food.order.service.app.config.OrderServiceConfigData;
-import org.sarav.food.order.service.app.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.messaging.mapper.OrderMessagingDataMapper;
+import org.sarav.food.order.system.domain.event.publisher.DomainEventPublisher;
 import org.sarav.food.order.system.kafka.KafkaMessageHelper;
 import org.sarav.food.order.system.kafka.service.KafkaProducer;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequestMessagePublisher {
+public class CreateOrderKafkaMessagePublisher implements DomainEventPublisher<OrderCreatedEvent> {
 
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer;

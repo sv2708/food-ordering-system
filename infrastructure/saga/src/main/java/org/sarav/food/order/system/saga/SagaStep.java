@@ -1,11 +1,9 @@
 package org.sarav.food.order.system.saga;
 
-import org.sarav.food.order.system.domain.event.DomainEvent;
+public interface SagaStep<T> {
 
-public interface SagaStep<T, S extends DomainEvent, F extends DomainEvent> {
+    void success(T data);
 
-    S success(T data);
-
-    F rollback(T data);
+    void rollback(T data);
 
 }
