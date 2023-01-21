@@ -32,28 +32,28 @@ public class PaymentOutboxScheduler implements OutboxScheduler {
     @Scheduled(fixedDelayString = "${order-service.outbox-scheduler-fixed-delay}",
             initialDelayString = "${order-service.outbox-scheduler-initial-delay}")
     public void processOutboxMessage() {
-        log.info("Pulling Outbox messages with Status {} from the table", OutboxStatus.STARTED);
+        log.info("Pulling  Outbox messages from Payment Outbox table with Status {} from the table", OutboxStatus.STARTED);
         Optional<List<OrderPaymentOutboxMessage>> outboxMessages = paymentOutboxHelper
                 .getPaymentOutboxMessagesByOutboxStatusAndSagaStatus(OutboxStatus.STARTED, SagaStatus.STARTED, SagaStatus.COMPENSATING);
 
         if (outboxMessages.isPresent()) {
             List<OrderPaymentOutboxMessage> messages = outboxMessages.get();
-            log.info("Received {} messages from the outbox table. Send messages with ids {} to the message bus",
+            log.info("Received {} messages from the Payment outbox table. Send messages with ids {} to the message bus",
                     messages.stream().map(msg -> msg.getId().toString()).collect(Collectors.joining(","))
             );
             messages.stream().forEach(message -> {
                 paymentRequestMessagePublisher.publish(message, this::updateOutboxStatus);
             });
-            log.info("Successfully Published {} Messages to the message bus", messages.size());
+            log.info("Successfully Published {} PaymentRequest Messages to the message bus", messages.size());
         } else {
-            log.info("No Messages are currently available in the outbox table to publish");
+            log.info("No PaymentRequest Messages are currently available in the outbox table to publish");
         }
     }
 
     private void updateOutboxStatus(OrderPaymentOutboxMessage outboxMessage, OutboxStatus outboxStatus) {
         outboxMessage.setOutboxStatus(outboxStatus);
         paymentOutboxHelper.save(outboxMessage);
-        log.info("Outbox Message with id {} has been successfully updated with status {}", outboxMessage.getId(), outboxStatus.toString());
+        log.info("PaymentRequest Outbox Message with id {} has been successfully updated with status {}", outboxMessage.getId(), outboxStatus.toString());
     }
 
 }
