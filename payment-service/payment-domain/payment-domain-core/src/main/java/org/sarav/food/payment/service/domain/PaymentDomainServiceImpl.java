@@ -44,6 +44,8 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
             return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)),
                     failureMessages,
                     paymentCompletedEventPublisher);
+        } else {
+            payment.setPaymentStatus(PaymentStatus.FAILED);
         }
         return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)), failureMessages, paymentFailedEventPublisher);
     }

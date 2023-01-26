@@ -117,4 +117,29 @@ SAGA Implementation
 1) any order items are not available in the restaurant.
 2) Right now it throws OrderDomainException if Product id is invalid.
 
-### Need to handle credit entry and customer balances.
+## Saga with Outbox Pattern
+
+To make this long-running transaction of Order System more robust, we make use of Saga and Outbox Pattern. Order Service
+is going to be the Saga Orchestration Service.
+
+It has 2 outbox tables namely OrderApproval Outbox Table and PaymentOutbox Table.
+
+A customer places the order. Instead of order-service directly pushing a message to the bus, event will be persisted in
+the PaymentOutboxTable as PaymentOutboxMessage.
+
+Then it will be read by a scheduler, and it is responsible for sending this messages to the event bus(Kafka).
+
+#### Saga with Outbox Happy flow
+
+![Saga with Outbox Happy flow](docs/outbox-happy-flow.png)
+
+#### Saga with Outbox When Payment failed
+
+![Saga with Outbox When Payment failed](docs/outbox-payment-failure.png)
+
+#### Saga with Outbox When Order Rejected
+
+![Saga with Outbox When Order Rejected](docs/outbox-approval-failure.png)
+
+### TODO: Need to handle credit entry and customer balances.
+

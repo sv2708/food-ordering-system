@@ -42,8 +42,7 @@ public class RestaurantApprovalOutboxHelper {
     }
 
     @Transactional(readOnly = true)
-    public Optional<OrderApprovalOutboxMessage> getApprovalOutboxMessageBySagaIdAndSagaStatus(String type,
-                                                                                              UUID sagaId,
+    public Optional<OrderApprovalOutboxMessage> getApprovalOutboxMessageBySagaIdAndSagaStatus(UUID sagaId,
                                                                                               SagaStatus sagaStatus) {
         return restaurantApprovalOutboxRepository.findByTypeAndSagaIdAndSagaStatus(ORDER_SAGA_NAME, sagaId, sagaStatus);
     }

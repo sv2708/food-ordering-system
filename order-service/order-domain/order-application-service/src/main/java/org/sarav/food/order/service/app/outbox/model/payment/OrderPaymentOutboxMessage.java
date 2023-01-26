@@ -24,7 +24,7 @@ public class OrderPaymentOutboxMessage {
     private SagaStatus sagaStatus;
     private OrderStatus orderStatus;
     private OutboxStatus outboxStatus;
-    private int version;
+    private int version; // used for optimistic locking of the OrderPaymentOutbox Entity
 
     public void setProcessedAt(ZonedDateTime processedAt) {
         this.processedAt = processedAt;
