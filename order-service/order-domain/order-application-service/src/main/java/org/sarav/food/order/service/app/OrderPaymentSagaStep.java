@@ -100,7 +100,7 @@ public class OrderPaymentSagaStep implements SagaStep<PaymentResponse> {
         /* After the saga step is complete for payment, start the saga step for Restaurant Approval */
         restaurantApprovalOutboxHelper.saveApprovalOutboxMessage(orderApprovalEventPayload,
                 orderPaidEvent.getOrder().getOrderStatus(),
-                orderSagaHelper.orderStatusToSagaStatus(orderPaidEvent.getOrder().getOrderStatus()),
+                sagaStatus, // PROCESSING
                 OutboxStatus.STARTED,
                 UUID.fromString(paymentResponse.getSagaId())
         );

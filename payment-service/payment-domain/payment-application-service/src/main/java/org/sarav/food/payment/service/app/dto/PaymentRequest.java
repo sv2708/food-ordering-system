@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.sarav.food.payment.service.domain.valueobjects.PaymentOrderStatus;
+import org.sarav.food.order.system.domain.valueobjects.PaymentOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

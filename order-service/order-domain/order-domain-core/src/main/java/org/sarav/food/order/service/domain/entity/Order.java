@@ -162,7 +162,7 @@ public class Order extends AggregateRoot<OrderId> {
         if (this.orderStatus != OrderStatus.PAID) {
             throw new OrderDomainException("Order is not in right status to change to CANCELLED state" + "Current State: " + this.orderStatus.toString());
         }
-        this.orderStatus = OrderStatus.CANCELLED;
+        this.orderStatus = OrderStatus.CANCELLING;
         updateFailureMessages(failureMessages);
     }
 

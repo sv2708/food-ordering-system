@@ -3,9 +3,9 @@ package org.sarav.food.payment.service.messaging.mapper;
 import org.sarav.food.order.OrderPaymentStatus;
 import org.sarav.food.order.PaymentRequestAvroModel;
 import org.sarav.food.order.PaymentResponseAvroModel;
+import org.sarav.food.order.system.domain.valueobjects.PaymentOrderStatus;
 import org.sarav.food.payment.service.app.dto.PaymentRequest;
 import org.sarav.food.payment.service.domain.event.PaymentEvent;
-import org.sarav.food.payment.service.domain.valueobjects.PaymentOrderStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

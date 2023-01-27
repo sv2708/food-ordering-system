@@ -41,8 +41,16 @@ public class OrderDomainServiceImpl implements OrderDomainService {
         log.info("Order with id: {} has been approved", order.getId());
     }
 
+    /**
+     * Order got rejected at the Restaurant level.
+     * OrderRejectedEvent received from Restaurant Service.
+     * So Order needs to be cancelled and payment needs to be refunded.
+     *
+     * @param order
+     * @param failureMessages
+     */
     @Override
-    public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessages) {
+    public OrderCancelledEvent cancelRejectedOrder(Order order, List<String> failureMessages) {
         order.initCancel(failureMessages);
         log.info("Cancel initiated for Order with id " + order.getId());
         return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)));

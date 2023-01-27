@@ -1,4 +1,4 @@
-package org.sarav.food.payment.service.domain.valueobjects;
+package org.sarav.food.order.system.domain.valueobjects;
 
 public enum PaymentOrderStatus {
 

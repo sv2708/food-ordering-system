@@ -12,6 +12,7 @@ import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.OrderItem;
 import org.sarav.food.order.service.domain.entity.Product;
 import org.sarav.food.order.service.domain.entity.Restaurant;
+import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.event.OrderPaidEvent;
 import org.sarav.food.order.service.domain.valueobjects.DeliveryAddress;
@@ -93,7 +94,7 @@ public class OrderDataMapper {
                 .orderId(orderCreatedEvent.getOrder().getId().getValue().toString())
                 .customerId(orderCreatedEvent.getOrder().getCustomerId().getValue().toString())
                 .amount(orderCreatedEvent.getOrder().getPrice().getAmount())
-                .paymentOrderStatus(PaymentStatus.PENDING.name())
+                .paymentOrderStatus(PaymentOrderStatus.PENDING.name())
                 .build();
 
     }
@@ -114,4 +115,15 @@ public class OrderDataMapper {
                 .build();
 
     }
+
+    public OrderPaymentEventPayload orderCancelledEventToOrderPaymentEventPayload(OrderCancelledEvent orderCancelledEvent) {
+        return OrderPaymentEventPayload.builder()
+                .orderId(orderCancelledEvent.getOrder().getId().getValue().toString())
+                .createdAt(orderCancelledEvent.getCreatedAt())
+                .customerId(orderCancelledEvent.getOrder().getCustomerId().getValue().toString())
+                .paymentOrderStatus(PaymentOrderStatus.CANCELLED.name()) // Payment Status should be cancelled
+                .amount(orderCancelledEvent.getOrder().getPrice().getAmount())
+                .build();
+    }
+
 }
