@@ -182,16 +182,16 @@ drop table if exists "order".payment_outbox cascade;
 
 create table "order".payment_outbox
 (
-    id uuid not null,
-    saga_id uuid not null,
-    created_at TIMESTAMP with TIME ZONE not null,
-    processed_at TIMESTAMP with TIME ZONE not null,
-    type character varying collate "pg_catalog".default not null,
-    payload jsonb not null,
-    outbox_status outbox_status not null,
-    saga_status saga_status not null,
-    order_status order_status not null,
-    version integer not null,
+    id            uuid                                           not null,
+    saga_id       uuid                                           not null,
+    created_at    TIMESTAMP with TIME ZONE                       not null,
+    processed_at  TIMESTAMP with TIME ZONE                       not null,
+    type          character varying collate "pg_catalog".default not null,
+    payload       jsonb                                          not null,
+    outbox_status outbox_status                                  not null,
+    saga_status   saga_status                                    not null,
+    order_status  order_status                                   not null,
+    version       integer                                        not null,
     constraint payment_outbox_pkey primary key (id)
 );
 
@@ -208,18 +208,18 @@ drop table if exists "order".restaurant_approval_outbox cascade;
 
 create table "order".restaurant_approval_outbox
 (
-    id uuid not null,
-    saga_id uuid not null,
-    created_at TIMESTAMP with TIME ZONE not null,
-    processed_at TIMESTAMP with TIME ZONE not null,
-    type character varying collate "pg_catalog".default not null,
-    payload jsonb not null,
-    outbox_status outbox_status not null,
-    saga_status saga_status not null,
-    order_status order_status not null,
-    version integer not null,
-    constraint payment_outbox_pkey primary key (id)
-)
+    id            uuid                                           not null,
+    saga_id       uuid                                           not null,
+    created_at    TIMESTAMP with TIME ZONE                       not null,
+    processed_at  TIMESTAMP with TIME ZONE                       not null,
+    type          character varying collate "pg_catalog".default not null,
+    payload       jsonb                                          not null,
+    outbox_status outbox_status                                  not null,
+    saga_status   saga_status                                    not null,
+    order_status  order_status                                   not null,
+    version       integer                                        not null,
+    constraint restaurant_outbox_pkey primary key (id)
+);
 
 
 create index "restaurant_approval_outbox_order_saga_status"

@@ -12,7 +12,6 @@ import org.sarav.food.order.service.domain.entity.Order;
 import org.sarav.food.order.service.domain.entity.Restaurant;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.exception.OrderDomainException;
-import org.sarav.food.order.system.domain.event.publisher.DomainEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,15 +27,13 @@ public class OrderCreateHelper {
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
-    private final DomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher;
 
-    public OrderCreateHelper(OrderDomainService orderDomainService, OrderRepository orderRepository, CustomerRepository customerRepository, RestaurantRepository restaurantRepository, OrderDataMapper orderDataMapper, DomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
+    public OrderCreateHelper(OrderDomainService orderDomainService, OrderRepository orderRepository, CustomerRepository customerRepository, RestaurantRepository restaurantRepository, OrderDataMapper orderDataMapper) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.restaurantRepository = restaurantRepository;
         this.orderDataMapper = orderDataMapper;
-        this.orderCreatedEventPublisher = orderCreatedEventPublisher;
     }
 
     @Transactional

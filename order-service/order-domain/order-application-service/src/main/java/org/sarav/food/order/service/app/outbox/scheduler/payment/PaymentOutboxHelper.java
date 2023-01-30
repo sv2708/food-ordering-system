@@ -13,6 +13,8 @@ import org.sarav.food.order.system.saga.SagaStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,6 +69,7 @@ public class PaymentOutboxHelper {
                 OrderPaymentOutboxMessage.builder()
                         .id(UUID.randomUUID())
                         .createdAt(orderPaymentEventPayload.getCreatedAt())
+                        .processedAt(ZonedDateTime.now(ZoneId.of("UTC")))
                         .sagaId(sagaId)
                         .type(ORDER_SAGA_NAME)
                         .orderStatus(orderStatus)

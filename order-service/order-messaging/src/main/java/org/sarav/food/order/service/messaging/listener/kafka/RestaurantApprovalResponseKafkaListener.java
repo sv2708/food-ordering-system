@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.RestaurantApprovalResponseAvroModel;
 import org.sarav.food.order.RestaurantApprovalStatus;
 import org.sarav.food.order.service.app.ports.input.message.listener.restaurantapproval.RestaurantApprovalResponseMessageListener;
+import org.sarav.food.order.service.domain.exception.OrderNotFoundException;
 import org.sarav.food.order.service.messaging.mapper.OrderMessagingDataMapper;
 import org.sarav.food.order.system.kafka.service.KafkaConsumer;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -39,23 +41,36 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaConsumer<Re
                 messages.size(), keys.toString(), partitions.toString(), offsets.toString());
 
         messages.forEach(avroModel -> {
-            if (avroModel.getRestaurantApprovalStatus() == RestaurantApprovalStatus.APPROVED) {
-                log.info("Received Message Restaurant Successfully approved response for {} in Restaurant: {}",
-                        avroModel.getOrderId(),
-                        avroModel.getRestaurantId());
-                restaurantApprovalResponseMessageListener.orderApproved(
-                        orderMessagingDataMapper.restaurantApprovalResponseAvroModelToRestaurantApprovalResponse(avroModel));
-            } else if (avroModel.getRestaurantApprovalStatus() == RestaurantApprovalStatus.REJECTED) {
-                log.info("Received Message Restaurant Approval Failed Response for {} in Restaurant: {}",
-                        avroModel.getOrderId(),
-                        avroModel.getRestaurantId());
-                log.warn(String.join(FAILURE_MSG_DELIMITER, avroModel.getFailureMessages()));
-                restaurantApprovalResponseMessageListener.orderRejected(
-                        orderMessagingDataMapper.restaurantApprovalResponseAvroModelToRestaurantApprovalResponse(avroModel)
-                );
-            } else {
-                log.error("Invalid Restaurant Approval Response Received");
-                log.warn(String.join(FAILURE_MSG_DELIMITER, avroModel.getFailureMessages()));
+            try {
+                if (avroModel.getRestaurantApprovalStatus() == RestaurantApprovalStatus.APPROVED) {
+                    log.info("Received Message Restaurant Successfully approved response for {} in Restaurant: {}",
+                            avroModel.getOrderId(),
+                            avroModel.getRestaurantId());
+                    restaurantApprovalResponseMessageListener.orderApproved(
+                            orderMessagingDataMapper.restaurantApprovalResponseAvroModelToRestaurantApprovalResponse(avroModel));
+                } else if (avroModel.getRestaurantApprovalStatus() == RestaurantApprovalStatus.REJECTED) {
+                    log.info("Received Message Restaurant Approval Failed Response for {} in Restaurant: {}",
+                            avroModel.getOrderId(),
+                            avroModel.getRestaurantId());
+                    log.warn(String.join(FAILURE_MSG_DELIMITER, avroModel.getFailureMessages()));
+                    restaurantApprovalResponseMessageListener.orderRejected(
+                            orderMessagingDataMapper.restaurantApprovalResponseAvroModelToRestaurantApprovalResponse(avroModel)
+                    );
+                } else {
+                    log.error("Invalid Restaurant Approval Response Received");
+                    log.warn(String.join(FAILURE_MSG_DELIMITER, avroModel.getFailureMessages()));
+                }
+            }
+
+            /**
+             handling the below exceptions will prevent kafka listener from retrying the failed message
+             as these errors cannot be resolved when retrying.
+             */ catch (OptimisticLockingFailureException e) {
+                // This Exception will occur when same outbox message is processed more than by the system.
+                log.error("Optimistic Locking Exception Occurred as the message for Order Approval {} was already processed. Error: {}",
+                        avroModel.getOrderId(), e.getMessage());
+            } catch (OrderNotFoundException e) {
+                log.error("Order with Id {} is not found.", avroModel.getOrderId());
             }
         });
 

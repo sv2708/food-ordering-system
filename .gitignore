@@ -5,3 +5,4 @@ target
 infrastructure/docker-compose/volumes
 order-service/order-container/src/main/resources/application-dev.yml
 customer-service/src/main/resources/application-dev.yml
+**/*.iml

@@ -30,6 +30,10 @@
             <artifactId>order-domain-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.sarav</groupId>
+            <artifactId>outbox</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
         </dependency>

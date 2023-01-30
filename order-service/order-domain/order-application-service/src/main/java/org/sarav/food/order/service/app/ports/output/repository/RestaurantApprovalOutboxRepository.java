@@ -19,7 +19,7 @@ public interface RestaurantApprovalOutboxRepository {
 
     Optional<OrderApprovalOutboxMessage> findByTypeAndSagaIdAndSagaStatus(String type,
                                                                           UUID sagaId,
-                                                                          SagaStatus sagaStatus);
+                                                                          SagaStatus... sagaStatus);
 
     OrderApprovalOutboxMessage save(OrderApprovalOutboxMessage orderApprovalOutboxMessage);
 

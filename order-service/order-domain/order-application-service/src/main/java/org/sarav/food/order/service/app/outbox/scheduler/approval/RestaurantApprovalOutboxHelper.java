@@ -73,6 +73,7 @@ public class RestaurantApprovalOutboxHelper {
                 .payload(createPayload(payload))
                 .type(ORDER_SAGA_NAME)
                 .createdAt(ZonedDateTime.now(ZoneId.of("UTC")))
+                .processedAt(ZonedDateTime.now(ZoneId.of("UTC")))
                 .orderStatus(orderStatus)
                 .outboxStatus(outboxStatus)
                 .sagaStatus(sagaStatus)

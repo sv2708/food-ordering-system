@@ -1,0 +1,3 @@
+order-service:
+  outbox-scheduler-fixed-delay: 1000
+  outbox-scheduler-initial-delay: 1000

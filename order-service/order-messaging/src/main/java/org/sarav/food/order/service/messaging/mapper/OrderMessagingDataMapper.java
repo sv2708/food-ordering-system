@@ -3,6 +3,8 @@ package org.sarav.food.order.service.messaging.mapper;
 import org.sarav.food.order.*;
 import org.sarav.food.order.service.app.dto.message.PaymentResponse;
 import org.sarav.food.order.service.app.dto.message.RestaurantApprovalResponse;
+import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventPayload;
+import org.sarav.food.order.service.app.outbox.model.payment.OrderPaymentEventPayload;
 import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.event.OrderPaidEvent;
@@ -59,6 +61,37 @@ public class OrderMessagingDataMapper {
                 ).collect(Collectors.toList()))
                 .setPrice(domainEvent.getOrder().getPrice().getAmount())
                 .setRestaurantApprovalStatus(RestaurantApprovalStatus.PAID)
+                .build();
+    }
+
+    public PaymentRequestAvroModel orderPaymentEventPayloadToPaymentRequestAvroModel(OrderPaymentEventPayload orderPaymentEventPayload, String sagaId) {
+        return PaymentRequestAvroModel.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setOrderId(orderPaymentEventPayload.getOrderId())
+                .setCustomerId(orderPaymentEventPayload.getCustomerId())
+                .setOrderPaymentStatus(OrderPaymentStatus.valueOf(orderPaymentEventPayload.getPaymentOrderStatus()))
+                .setPrice(orderPaymentEventPayload.getAmount())
+                .setSagaId(sagaId)
+                .setCreatedAt(orderPaymentEventPayload.getCreatedAt().toInstant())
+                .build();
+    }
+
+    public RestaurantApprovalRequestAvroModel
+    orderApprovalEventPayloadToRestaurantApprovalRequestAvroModel(OrderApprovalEventPayload orderApprovalEventPayload,
+                                                                  String sagaId) {
+        return RestaurantApprovalRequestAvroModel.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setSagaId(sagaId)
+                .setOrderId(orderApprovalEventPayload.getOrderId())
+                .setRestaurantId(orderApprovalEventPayload.getRestaurantId())
+                .setPrice(orderApprovalEventPayload.getPrice())
+                .setCreatedAt(orderApprovalEventPayload.getCreatedAt().toInstant())
+                .setRestaurantApprovalStatus(RestaurantApprovalStatus.valueOf(orderApprovalEventPayload.getRestaurantApprovalStatus()))
+                .setProducts(orderApprovalEventPayload.getProducts().stream()
+                        .map(payloadProduct -> Product.newBuilder()
+                                .setId(payloadProduct.getId())
+                                .setQuantity(payloadProduct.getQuantity())
+                                .build()).collect(Collectors.toList()))
                 .build();
     }
 
