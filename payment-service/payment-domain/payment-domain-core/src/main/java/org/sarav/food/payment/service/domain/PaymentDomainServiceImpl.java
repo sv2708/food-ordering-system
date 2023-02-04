@@ -2,7 +2,6 @@ package org.sarav.food.payment.service.domain;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.system.domain.DomainConstants;
-import org.sarav.food.order.system.domain.event.publisher.DomainEventPublisher;
 import org.sarav.food.order.system.domain.valueobjects.Money;
 import org.sarav.food.order.system.domain.valueobjects.PaymentStatus;
 import org.sarav.food.payment.service.domain.entity.CreditEntry;
@@ -27,10 +26,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
     @Override
     public PaymentEvent validateAndInitiatePayment(Payment payment, CreditEntry creditEntry,
                                                    List<CreditHistory> creditHistoryEntries,
-                                                   List<String> failureMessages,
-                                                   DomainEventPublisher<PaymentCompletedEvent>
-                                                           paymentCompletedEventPublisher,
-                                                   DomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher) {
+                                                   List<String> failureMessages) {
 
         payment.validatePayment(failureMessages);
         payment.initializePayment(); // set id and createdAt fields
@@ -42,12 +38,11 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
         if (failureMessages.size() == 0) {
             payment.updateStatus(PaymentStatus.COMPLETED);
             return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)),
-                    failureMessages,
-                    paymentCompletedEventPublisher);
+                    failureMessages);
         } else {
             payment.setPaymentStatus(PaymentStatus.FAILED);
         }
-        return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)), failureMessages, paymentFailedEventPublisher);
+        return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)), failureMessages);
     }
 
     private void validateCreditHistory(Payment payment, CreditEntry creditEntry,
@@ -113,16 +108,12 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
      * @param creditEntry
      * @param creditHistoryEntries
      * @param failureMessages
-     * @param paymentFailedEventPublisher
-     * @param paymentCancelledEventPublisher
      * @return
      */
     @Override
     public PaymentEvent validateAndCancelPayment(Payment payment, CreditEntry creditEntry,
                                                  List<CreditHistory> creditHistoryEntries,
-                                                 List<String> failureMessages,
-                                                 DomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher,
-                                                 DomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventPublisher) {
+                                                 List<String> failureMessages) {
         payment.validatePayment(failureMessages);
         if (failureMessages.isEmpty()) {
             creditEntry.addCreditAmount(payment.getAmount());
@@ -135,8 +126,8 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
                     payment.getId(), payment.getOrderId());
             payment.updateStatus(PaymentStatus.FAILED);
             return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)),
-                    failureMessages, paymentFailedEventPublisher);
+                    failureMessages);
         }
-        return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)), failureMessages, paymentCancelledEventPublisher);
+        return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)), failureMessages);
     }
 }

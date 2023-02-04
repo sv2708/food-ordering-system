@@ -45,3 +45,28 @@ CREATE TABLE "payment".credit_history
     type        transaction_type NOT NULL,
     CONSTRAINT credit_history_pkey PRIMARY KEY (id)
 );
+
+DROP TYPE IF EXISTS outbox_status;
+CREATE TYPE outbox_status as ENUM ('STARTED', 'COMPLETED', 'FAILED');
+
+
+DROP TABLE IF EXISTS "payment".order_outbox CASCADE;
+create table "payment".order_outbox
+(
+    id             uuid                                           not null,
+    saga_id        uuid                                           not null,
+    created_at     TIMESTAMP with TIME ZONE                       not null,
+    processed_at   TIMESTAMP with TIME ZONE                       not null,
+    type           character varying collate "pg_catalog".default not null,
+    payload        jsonb                                          not null,
+    outbox_status  outbox_status                                  not null,
+    payment_status payment_status                                 not null,
+    version        integer                                        not null,
+    constraint order_outbox_pkey primary key (id)
+);
+
+create index "order_outbox_payment_status_index"
+    on "payment".order_outbox (type, payment_status);
+
+create unique index "payment_status_saga_id_outbox_status_index" on
+    "payment".order_outbox (type, saga_id, payment_status, outbox_status);

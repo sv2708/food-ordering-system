@@ -51,10 +51,10 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<PaymentRespon
                             .paymentCancelled(orderMessagingDataMapper.paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel));
                 } /**
                  handling the below exceptions will prevent kafka listener from retrying the failed message
-                 as these errors cannot be resolved when retrying.
+                 as these errors cannot be resolved by retrying.
                  */
             } catch (OptimisticLockingFailureException e) {
-                // This Exception will occur when same outbox message is processed more than by the system.
+                // This Exception will occur when same outbox message is processed more once than by the system.
                 log.error("Optimistic Locking Exception Occurred as the message for Order Payment {} was already processed. Error: {}",
                         paymentResponseAvroModel.getOrderId(), e.getMessage());
             } catch (OrderNotFoundException e) {

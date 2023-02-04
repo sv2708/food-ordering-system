@@ -3,7 +3,6 @@ package org.sarav.food.payment.service.app;
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.payment.service.app.dto.PaymentRequest;
 import org.sarav.food.payment.service.app.ports.input.message.listener.PaymentRequestMessageListener;
-import org.sarav.food.payment.service.domain.event.PaymentEvent;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,18 +17,12 @@ public class PaymentRequestMessageListenerImpl implements PaymentRequestMessageL
 
     @Override
     public void completePayment(PaymentRequest paymentRequest) {
-        PaymentEvent paymentCompletedEvent = paymentRequestHelper.persistPayment(paymentRequest);
-        fireEvent(paymentCompletedEvent);
+        paymentRequestHelper.persistPayment(paymentRequest);
     }
 
     @Override
     public void cancelPayment(PaymentRequest paymentRequest) {
-        PaymentEvent paymentEvent = paymentRequestHelper.persistCancelPayment(paymentRequest);
-        fireEvent(paymentEvent);
+        paymentRequestHelper.persistCancelPayment(paymentRequest);
     }
 
-    private void fireEvent(PaymentEvent paymentEvent) {
-        log.info("Publishing Payment Event for Payment {}", paymentEvent.getPayment().getId().getValue());
-        paymentEvent.fire();
-    }
 }

@@ -51,7 +51,8 @@ public class OrderPaymentRequestKafkaPublisher implements PaymentRequestMessageP
             PaymentRequestAvroModel paymentRequestAvroModel =
                     orderMessagingDataMapper.orderPaymentEventPayloadToPaymentRequestAvroModel(
                             orderPaymentEventPayload, sagaId);
-            kafkaProducer.sendMessage(paymentRequestTopicName, sagaId, // since sagaId is used as the key here, messages belonging to the same saga will end up in same partition
+            kafkaProducer.sendMessage(paymentRequestTopicName,
+                    sagaId, // since sagaId is used as the key here, messages belonging to the same saga will end up in same partition
                     paymentRequestAvroModel,
                     kafkaMessageHelper.getKafkaCallback(paymentRequestTopicName,
                             paymentRequestAvroModel,
