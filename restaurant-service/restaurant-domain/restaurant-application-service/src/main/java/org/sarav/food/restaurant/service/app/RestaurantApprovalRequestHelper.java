@@ -2,10 +2,12 @@ package org.sarav.food.restaurant.service.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.system.domain.valueobjects.OrderId;
+import org.sarav.food.order.system.outbox.OutboxStatus;
 import org.sarav.food.restaurant.service.app.dto.RestaurantApprovalRequest;
 import org.sarav.food.restaurant.service.app.mapper.RestaurantDataMapper;
-import org.sarav.food.restaurant.service.app.ports.output.message.publisher.OrderApprovedMessagePublisher;
-import org.sarav.food.restaurant.service.app.ports.output.message.publisher.OrderRejectedMessagePublisher;
+import org.sarav.food.restaurant.service.app.outbox.model.OrderOutboxMessage;
+import org.sarav.food.restaurant.service.app.outbox.scheduler.OrderOutboxHelper;
+import org.sarav.food.restaurant.service.app.ports.output.message.publisher.RestaurantApprovalResponseMessagePublisher;
 import org.sarav.food.restaurant.service.app.ports.output.repository.OrderApprovalRepository;
 import org.sarav.food.restaurant.service.app.ports.output.repository.RestaurantRepository;
 import org.sarav.food.restaurant.service.domain.RestaurantDomainService;
@@ -27,36 +29,48 @@ public class RestaurantApprovalRequestHelper {
     private final RestaurantDataMapper restaurantDataMapper;
     private final RestaurantRepository restaurantRepository;
     private final OrderApprovalRepository orderApprovalRepository;
-    private final OrderApprovedMessagePublisher orderApprovedMessagePublisher;
-    private final OrderRejectedMessagePublisher orderRejectedMessagePublisher;
+    private final OrderOutboxHelper orderOutboxHelper;
+    private final RestaurantApprovalResponseMessagePublisher responseMessagePublisher;
 
     public RestaurantApprovalRequestHelper(RestaurantDomainService restaurantDomainService,
                                            RestaurantDataMapper restaurantDataMapper,
                                            RestaurantRepository restaurantRepository,
                                            OrderApprovalRepository orderApprovalRepository,
-                                           OrderApprovedMessagePublisher orderApprovedMessagePublisher,
-                                           OrderRejectedMessagePublisher orderRejectedMessagePublisher) {
+                                           OrderOutboxHelper orderOutboxHelper,
+                                           RestaurantApprovalResponseMessagePublisher responseMessagePublisher) {
         this.restaurantDomainService = restaurantDomainService;
         this.restaurantDataMapper = restaurantDataMapper;
         this.restaurantRepository = restaurantRepository;
         this.orderApprovalRepository = orderApprovalRepository;
-        this.orderApprovedMessagePublisher = orderApprovedMessagePublisher;
-        this.orderRejectedMessagePublisher = orderRejectedMessagePublisher;
+        this.orderOutboxHelper = orderOutboxHelper;
+        this.responseMessagePublisher = responseMessagePublisher;
     }
 
     @Transactional
-    public OrderApprovalEvent persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
+    public void persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
         log.info("Processing restaurant approval for order id: {}", restaurantApprovalRequest.getOrderId());
+
+        if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
+            log.info("An outbox message with saga id: {} already saved to database!",
+                    restaurantApprovalRequest.getSagaId());
+            return;
+        }
+
         List<String> failureMessages = new ArrayList<>();
         Restaurant restaurant = findRestaurant(restaurantApprovalRequest);
-        OrderApprovalEvent orderApprovalEvent =
-                restaurantDomainService.validateOrder(
-                        restaurant,
-                        failureMessages,
-                        orderApprovedMessagePublisher,
-                        orderRejectedMessagePublisher);
+
+        OrderApprovalEvent orderApprovalEvent = restaurantDomainService.validateOrder(
+                restaurant,
+                failureMessages);
         orderApprovalRepository.save(restaurant.getOrderApproval());
-        return orderApprovalEvent;
+
+
+        orderOutboxHelper
+                .saveOrderOutboxMessage(restaurantDataMapper.orderApprovalEventToOrderEventPayload(orderApprovalEvent),
+                        orderApprovalEvent.getOrderApproval().getApprovalStatus(),
+                        OutboxStatus.STARTED,
+                        UUID.fromString(restaurantApprovalRequest.getSagaId()));
+
     }
 
     private Restaurant findRestaurant(RestaurantApprovalRequest restaurantApprovalRequest) {
@@ -88,4 +102,18 @@ public class RestaurantApprovalRequestHelper {
         }
         return restaurant;
     }
+
+    private boolean publishIfOutboxMessageProcessed(RestaurantApprovalRequest restaurantApprovalRequest) {
+        Optional<OrderOutboxMessage> orderOutboxMessage =
+                orderOutboxHelper.getCompletedOrderOutboxMessageBySagaIdAndOutboxStatus(UUID
+                        .fromString(restaurantApprovalRequest.getSagaId()), OutboxStatus.COMPLETED);
+        if (orderOutboxMessage.isPresent()) {
+            responseMessagePublisher.publish(orderOutboxMessage.get(),
+                    orderOutboxHelper::updateOutboxStatus);
+            return true;
+        }
+        return false;
+    }
+
+
 }

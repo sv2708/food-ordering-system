@@ -5,9 +5,11 @@ import org.sarav.food.order.system.domain.valueobjects.OrderId;
 import org.sarav.food.order.system.domain.valueobjects.OrderStatus;
 import org.sarav.food.order.system.domain.valueobjects.RestaurantId;
 import org.sarav.food.restaurant.service.app.dto.RestaurantApprovalRequest;
+import org.sarav.food.restaurant.service.app.outbox.model.OrderEventPayload;
 import org.sarav.food.restaurant.service.domain.entity.OrderDetail;
 import org.sarav.food.restaurant.service.domain.entity.Product;
 import org.sarav.food.restaurant.service.domain.entity.Restaurant;
+import org.sarav.food.restaurant.service.domain.event.OrderApprovalEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -30,6 +32,16 @@ public class RestaurantDataMapper {
                         .totalAmount(new Money(restaurantApprovalRequest.getPrice()))
                         .orderStatus(OrderStatus.valueOf(restaurantApprovalRequest.getRestaurantOrderStatus().name()))
                         .build())
+                .build();
+    }
+
+    public OrderEventPayload orderApprovalEventToOrderEventPayload(OrderApprovalEvent orderApprovalEvent) {
+        return OrderEventPayload.builder()
+                .orderId(orderApprovalEvent.getOrderApproval().getOrderId().getValue().toString())
+                .restaurantId(orderApprovalEvent.getRestaurantId().getValue().toString())
+                .orderApprovalStatus(orderApprovalEvent.getOrderApproval().getApprovalStatus().name())
+                .createdAt(orderApprovalEvent.getCreatedAt())
+                .failureMessages(orderApprovalEvent.getFailureMessages())
                 .build();
     }
 }

@@ -7,9 +7,8 @@ import org.sarav.food.order.RestaurantApprovalStatus;
 import org.sarav.food.order.system.domain.valueobjects.ProductId;
 import org.sarav.food.order.system.domain.valueobjects.RestaurantOrderStatus;
 import org.sarav.food.restaurant.service.app.dto.RestaurantApprovalRequest;
+import org.sarav.food.restaurant.service.app.outbox.model.OrderEventPayload;
 import org.sarav.food.restaurant.service.domain.entity.Product;
-import org.sarav.food.restaurant.service.domain.event.OrderApprovedEvent;
-import org.sarav.food.restaurant.service.domain.event.OrderRejectedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -17,31 +16,18 @@ import java.util.stream.Collectors;
 
 @Component
 public class RestaurantMessagingDataMapper {
-    public RestaurantApprovalResponseAvroModel
-    orderApprovedEventToRestaurantApprovalResponseAvroModel(OrderApprovedEvent orderApprovedEvent) {
-        return RestaurantApprovalResponseAvroModel.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .setSagaId("")
-                .setOrderId(orderApprovedEvent.getOrderApproval().getOrderId().getValue().toString())
-                .setRestaurantId(orderApprovedEvent.getRestaurantId().getValue().toString())
-                .setCreatedAt(orderApprovedEvent.getCreatedAt().toInstant())
-                .setRestaurantApprovalStatus(RestaurantApprovalStatus.valueOf(orderApprovedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
-                .setFailureMessages(orderApprovedEvent.getFailureMessages())
-                .build();
-    }
+
 
     public RestaurantApprovalResponseAvroModel
-    orderRejectedEventToRestaurantApprovalResponseAvroModel(OrderRejectedEvent orderRejectedEvent) {
+    orderEventPayloadToRestaurantApprovalResponseAvroModel(String sagaId, OrderEventPayload orderEventPayload) {
         return RestaurantApprovalResponseAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setSagaId("")
-                .setOrderId(orderRejectedEvent.getOrderApproval().getOrderId().getValue().toString())
-                .setRestaurantId(orderRejectedEvent.getRestaurantId().getValue().toString())
-                .setCreatedAt(orderRejectedEvent.getCreatedAt().toInstant())
-                .setRestaurantApprovalStatus(RestaurantApprovalStatus.valueOf(orderRejectedEvent.
-                        getOrderApproval().getApprovalStatus().name()))
-                .setFailureMessages(orderRejectedEvent.getFailureMessages())
+                .setSagaId(sagaId)
+                .setOrderId(orderEventPayload.getOrderId())
+                .setRestaurantId(orderEventPayload.getRestaurantId())
+                .setCreatedAt(orderEventPayload.getCreatedAt().toInstant())
+                .setRestaurantApprovalStatus(RestaurantApprovalStatus.valueOf(orderEventPayload.getOrderApprovalStatus()))
+                .setFailureMessages(orderEventPayload.getFailureMessages())
                 .build();
     }
 

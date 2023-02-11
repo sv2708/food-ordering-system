@@ -34,6 +34,10 @@
         </dependency>
         <dependency>
             <groupId>org.sarav</groupId>
+            <artifactId>outbox</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sarav</groupId>
             <artifactId>restaurant-application-service</artifactId>
         </dependency>
     </dependencies>
