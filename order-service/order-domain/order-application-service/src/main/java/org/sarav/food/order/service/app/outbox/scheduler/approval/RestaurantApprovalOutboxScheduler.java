@@ -3,6 +3,7 @@ package org.sarav.food.order.service.app.outbox.scheduler.approval;
 import lombok.extern.slf4j.Slf4j;
 import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalOutboxMessage;
 import org.sarav.food.order.service.app.ports.output.message.publisher.restaurantapproval.RestaurantApprovalRequestMessagePublisher;
+import org.sarav.food.order.system.domain.DomainConstants;
 import org.sarav.food.order.system.outbox.OutboxScheduler;
 import org.sarav.food.order.system.outbox.OutboxStatus;
 import org.sarav.food.order.system.saga.SagaStatus;
@@ -10,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,9 +36,9 @@ public class RestaurantApprovalOutboxScheduler implements OutboxScheduler {
     public void processOutboxMessage() {
         log.info("Pulling Outbox messages from Restaurant Approval Outbox table with Status {} from the table", OutboxStatus.STARTED);
         Optional<List<OrderApprovalOutboxMessage>> outboxMessages = restaurantApprovalOutboxHelper
-                .getApprovalOutboxMessagesByOutboxStatusAndSagaStatus(OutboxStatus.STARTED, SagaStatus.STARTED, SagaStatus.COMPENSATING);
+                .getApprovalOutboxMessagesByOutboxStatusAndSagaStatus(OutboxStatus.STARTED, SagaStatus.PROCESSING);
 
-        if (outboxMessages.isPresent()) {
+        if (outboxMessages.isPresent() && outboxMessages.get().size() > 0) {
             List<OrderApprovalOutboxMessage> messages = outboxMessages.get();
             log.info("Received {} Order Approval messages from the Restaurant Approval outbox table. Send messages with ids {} to the message bus",
                     messages.stream().map(msg -> msg.getId().toString()).collect(Collectors.joining(","))
@@ -51,6 +54,8 @@ public class RestaurantApprovalOutboxScheduler implements OutboxScheduler {
 
     private void updateOutboxStatus(OrderApprovalOutboxMessage outboxMessage, OutboxStatus outboxStatus) {
         outboxMessage.setOutboxStatus(outboxStatus);
+        outboxMessage.setProcessedAt(ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)));
+
         restaurantApprovalOutboxHelper.save(outboxMessage);
         log.info("Order Approval Outbox Message with id {} has been successfully updated with status {}", outboxMessage.getId(),
                 outboxStatus.toString());

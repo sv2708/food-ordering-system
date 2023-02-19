@@ -129,9 +129,37 @@ the PaymentOutboxTable as PaymentOutboxMessage.
 
 Then it will be read by a scheduler, and it is responsible for sending this messages to the event bus(Kafka).
 
+Each Service will have its own outbox table to persist their events.
+Order Service is the SAGA coordinator. So it will have multiple outbox table each for one of the services it
+communicates with. It will also have a special field of Saga Status that will be updated depending on the events from
+each of the services.
+
 #### Saga with Outbox Happy flow
 
 ![Saga with Outbox Happy flow](docs/outbox-happy-flow.png)
+
+1) Customer Places the order. Order will be updated to `PENDING` state and persisted in DB. Also the outbox message for
+   the event `ORDER CREATED` will be persisted in payment outbox table with Saga Status `STARTED`.
+2) A Scheduler will read this `payment_outbox` table and publish messages to the kafka. After publishing the messages,
+   the Outbox status will be updated to `COMPLETED`.
+3) Payment Service Kafka consumer will read the message and validates the order and approves it and persists it in
+   payments table. For the `PAYMENT_COMPLETED` event, it will persist a message in its own outbox table.
+4) Payment Service's Scheduler will read the entries in its outbox table and publish the messages to kafka. After
+   successful publish, it will update the outbox message status to completed.
+5) Order Service's Payment Response message listener will look for payment response messages and once the successful
+   payment response message is received, then the saga step of SUCCESS will be executed.
+6) Order Service will update the order status to `PAID` and SagaStatus for the corresponding SAGA will be updated
+   to `PROCESSING` and the outbox message will be updated in both payment and restaurant_approval outbox tables(Saga
+   Stores).
+7) Order Service's Restaurant approval Scheduler will now pull the events from the Restaurant approval Outbox table with
+   Saga Status of `PROCESSING` and publishes them to kafka.
+8) Restaurant Service Kafka listener reads this message and validates the order and approves it and persist in db. It
+   will also write the event to its own outbox table.
+9) Restaurant Service Scheduler will pull the outbox messages with Outbox Status `STARTED` from its own table and
+   publishes them to kafka.
+10) Order Service's Kafka listener for Restaurant Service messages will read the messages and triggers the Success Saga
+    Step as the order is approved now by the restaurant. It will update the OrderStatus to `APPROVED` and persist to db.
+    Both payment and outbox messages will be updated with Saga Status of `SUCCEDDED` and outbox status of `COMPLETED`.
 
 #### Saga with Outbox When Payment failed
 
@@ -141,5 +169,11 @@ Then it will be read by a scheduler, and it is responsible for sending this mess
 
 ![Saga with Outbox When Order Rejected](docs/outbox-approval-failure.png)
 
-### TODO: Need to handle credit entry and customer balances.
+#### Saga Id and Outbox status
 
+Outbox status is local for each of the outbox table.That is outbox tables for Payment Request, Restaurant Approval in
+order-service
+and order_outbox in payment service and restaurant-approval outbox table in restaurant service.
+Saga ID will remain the same for the entire order lifecycle till it gets Completed/Cancelled.
+
+### TODO: Need to handle credit entry and customer balances.

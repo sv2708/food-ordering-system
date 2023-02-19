@@ -29,6 +29,7 @@ public class ApprovalOutboxDataAccessMapper {
                 .id(approvalOutboxEntity.getId())
                 .sagaId(approvalOutboxEntity.getSagaId())
                 .createdAt(approvalOutboxEntity.getCreatedAt())
+                .processedAt(approvalOutboxEntity.getProcessedAt())
                 .type(approvalOutboxEntity.getType())
                 .payload(approvalOutboxEntity.getPayload())
                 .orderStatus(approvalOutboxEntity.getOrderStatus())

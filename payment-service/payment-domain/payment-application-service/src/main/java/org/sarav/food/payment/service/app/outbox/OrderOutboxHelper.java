@@ -3,6 +3,7 @@ package org.sarav.food.payment.service.app.outbox;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.sarav.food.order.system.domain.DomainConstants;
 import org.sarav.food.order.system.domain.valueobjects.PaymentStatus;
 import org.sarav.food.order.system.outbox.OutboxStatus;
 import org.sarav.food.payment.service.app.outbox.model.OrderEventPayload;
@@ -78,6 +79,7 @@ public class OrderOutboxHelper {
     @Transactional
     public void updateOutboxMessageStatus(OrderOutboxMessage outboxMessage, OutboxStatus outboxStatus) {
         log.info("Updating OrderOutboxStatus to {} for OutboxMessage {}", outboxStatus.name(), outboxMessage.getId());
+        outboxMessage.setProcessedAt(ZonedDateTime.now(ZoneId.of(DomainConstants.UTC)));
         outboxMessage.setOutboxStatus(outboxStatus);
         save(outboxMessage);
     }

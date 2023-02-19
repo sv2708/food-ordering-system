@@ -37,7 +37,7 @@ public class PaymentOutboxHelper {
     public Optional<List<OrderPaymentOutboxMessage>> getPaymentOutboxMessagesByOutboxStatusAndSagaStatus(
             OutboxStatus outboxStatus,
             SagaStatus... sagaStatuses) {
-        return paymentOutboxRepository.findByTypeAndOutboxStatusAndSagaStatusIn(ORDER_SAGA_NAME, outboxStatus, sagaStatuses);
+        return paymentOutboxRepository.findByTypeAndOutboxStatusAndSagaStatus(ORDER_SAGA_NAME, outboxStatus, sagaStatuses);
     }
 
     @Transactional(readOnly = true)

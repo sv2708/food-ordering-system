@@ -71,6 +71,7 @@ public class OrderOutboxHelper {
     @Transactional
     public void updateOutboxStatus(OrderOutboxMessage orderPaymentOutboxMessage, OutboxStatus outboxStatus) {
         orderPaymentOutboxMessage.setOutboxStatus(outboxStatus);
+        orderPaymentOutboxMessage.setProcessedAt(ZonedDateTime.now(ZoneId.of(UTC)));
         save(orderPaymentOutboxMessage);
         log.info("Order outbox table status is updated as: {}", outboxStatus.name());
     }

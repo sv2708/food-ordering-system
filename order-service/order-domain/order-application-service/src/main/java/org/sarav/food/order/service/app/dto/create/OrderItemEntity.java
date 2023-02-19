@@ -3,23 +3,25 @@ package org.sarav.food.order.service.app.dto.create;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 public class OrderItemEntity {
 
     @NotNull
-    private final UUID productId;
+    private UUID productId;
     @NotNull
-    private final Integer quantity;
+    private Integer quantity;
     @NotNull
-    private final BigDecimal price;
+    private BigDecimal price;
     @NotNull
-    private final BigDecimal subTotal;
+    private BigDecimal subTotal;
 
 }

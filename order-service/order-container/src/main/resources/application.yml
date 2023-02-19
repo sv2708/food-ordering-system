@@ -10,8 +10,8 @@ order-service:
   payment-response-topic-name: payment-response
   restaurant-approval-request-topic-name: restaurant-approval-request
   restaurant-approval-response-topic-name: restaurant-approval-response
-  outbox-scheduler-fixed-delay: 1000
-  outbox-scheduler-initial-delay: 1000
+  outbox-scheduler-fixed-delay: 10000
+  outbox-scheduler-initial-delay: 10000
 spring:
   jpa:
     open-in-view: false
@@ -30,7 +30,7 @@ spring:
       platform: postgres
       schema-locations: classpath:init-schema.sql
       mode: always
-      data-locations: classpath:init-data.sql
+
 
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092

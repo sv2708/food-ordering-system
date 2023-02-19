@@ -63,6 +63,7 @@ public class OrderPaymentRequestKafkaPublisher implements PaymentRequestMessageP
         } catch (Exception e) {
             log.error("Error Occurred while sending OrderPaymentEvent to the topic {} with SagaId {} with message {}",
                     paymentRequestTopicName, sagaId, e.getMessage());
+            e.printStackTrace();
         }
     }
 }

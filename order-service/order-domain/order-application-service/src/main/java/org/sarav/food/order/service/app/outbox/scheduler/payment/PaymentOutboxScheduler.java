@@ -36,11 +36,10 @@ public class PaymentOutboxScheduler implements OutboxScheduler {
         Optional<List<OrderPaymentOutboxMessage>> outboxMessages = paymentOutboxHelper
                 .getPaymentOutboxMessagesByOutboxStatusAndSagaStatus(OutboxStatus.STARTED, SagaStatus.STARTED, SagaStatus.COMPENSATING);
 
-        if (outboxMessages.isPresent()) {
+        if (outboxMessages.isPresent() && outboxMessages.get().size() > 0) {
             List<OrderPaymentOutboxMessage> messages = outboxMessages.get();
             log.info("Received {} messages from the Payment outbox table. Send messages with ids {} to the message bus",
-                    messages.stream().map(msg -> msg.getId().toString()).collect(Collectors.joining(","))
-            );
+                    messages.stream().map(msg -> msg.getId().toString()).collect(Collectors.joining(",")));
             messages.stream().forEach(message -> {
                 paymentRequestMessagePublisher.publish(message, this::updateOutboxStatus);
             });

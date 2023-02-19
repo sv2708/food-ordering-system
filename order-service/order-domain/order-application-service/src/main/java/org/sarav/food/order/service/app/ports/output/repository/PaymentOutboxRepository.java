@@ -13,9 +13,9 @@ import java.util.UUID;
 @Repository
 public interface PaymentOutboxRepository {
 
-    Optional<List<OrderPaymentOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatusIn(String type,
-                                                                                       OutboxStatus outboxStatus,
-                                                                                       SagaStatus... sagaStatus);
+    Optional<List<OrderPaymentOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatus(String type,
+                                                                                     OutboxStatus outboxStatus,
+                                                                                     SagaStatus... sagaStatus);
 
     Optional<OrderPaymentOutboxMessage> findByTypeAndSagaIdAndSagaStatusIn(String type,
                                                                            UUID sagaId,

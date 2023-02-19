@@ -26,4 +26,8 @@ public class OrderOutboxMessage {
     public void setOutboxStatus(OutboxStatus status) {
         this.outboxStatus = status;
     }
+
+    public void setProcessedAt(ZonedDateTime time) {
+        this.processedAt = time;
+    }
 }
