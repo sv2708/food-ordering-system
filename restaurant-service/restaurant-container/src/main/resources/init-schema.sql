@@ -108,6 +108,12 @@ CREATE trigger refresh_order_restaurant_m_view
 EXECUTE PROCEDURE restaurant.refresh_order_restaurant_m_view();
 
 
+CREATE trigger refresh_product_restaurant_m_view
+    after INSERT OR UPDATE OR DELETE OR truncate
+    ON restaurant.products
+    FOR each statement
+EXECUTE PROCEDURE restaurant.refresh_order_restaurant_m_view();
+
 
 DROP TYPE IF EXISTS outbox_status;
 CREATE TYPE outbox_status AS ENUM ('STARTED', 'COMPLETED', 'FAILED');
