@@ -105,7 +105,7 @@ public class OrderApplicationServiceTest {
                         .subTotal(new BigDecimal("150.0")).build()))
                 .build();
 
-        Customer customer = new Customer();
+        Customer customer = new Customer(new CustomerId(UUID.randomUUID()), "username", "firstname", "lastname");
         customer.setId(new CustomerId(CUSTOMER_ID));
 
         Restaurant restaurantFromCommand = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand);

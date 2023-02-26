@@ -25,4 +25,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public Optional<Customer> findCustomer(UUID customerId) {
         return customerJpaRepository.findById(customerId).map(customerEntityDataMapper::customerEntityToCustomer);
     }
+
+    @Override
+    public Customer save(Customer customer) {
+        return customerEntityDataMapper.customerEntityToCustomer(
+                customerJpaRepository.save(customerEntityDataMapper.customerToCustomerEntity(customer)));
+    }
+     
 }

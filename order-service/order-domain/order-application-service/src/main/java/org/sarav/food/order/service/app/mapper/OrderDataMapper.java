@@ -4,14 +4,12 @@ import org.sarav.food.order.service.app.dto.create.CreateOrderCommand;
 import org.sarav.food.order.service.app.dto.create.CreateOrderResponse;
 import org.sarav.food.order.service.app.dto.create.OrderAddress;
 import org.sarav.food.order.service.app.dto.create.OrderItemEntity;
+import org.sarav.food.order.service.app.dto.message.CustomerModel;
 import org.sarav.food.order.service.app.dto.track.TrackOrderResponse;
 import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventPayload;
 import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventProduct;
 import org.sarav.food.order.service.app.outbox.model.payment.OrderPaymentEventPayload;
-import org.sarav.food.order.service.domain.entity.Order;
-import org.sarav.food.order.service.domain.entity.OrderItem;
-import org.sarav.food.order.service.domain.entity.Product;
-import org.sarav.food.order.service.domain.entity.Restaurant;
+import org.sarav.food.order.service.domain.entity.*;
 import org.sarav.food.order.service.domain.event.OrderCancelledEvent;
 import org.sarav.food.order.service.domain.event.OrderCreatedEvent;
 import org.sarav.food.order.service.domain.event.OrderPaidEvent;
@@ -124,6 +122,11 @@ public class OrderDataMapper {
                 .paymentOrderStatus(PaymentOrderStatus.CANCELLED.name()) // Payment Status should be cancelled
                 .amount(orderCancelledEvent.getOrder().getPrice().getAmount())
                 .build();
+    }
+
+    public Customer customerModelToCustomer(CustomerModel customerModel) {
+        return new Customer(new CustomerId(UUID.fromString(customerModel.getId())), customerModel.getUsername(),
+                customerModel.getFirstName(), customerModel.getLastName());
     }
 
 }

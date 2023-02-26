@@ -122,3 +122,12 @@ create unique index "restaurant_approval_outbox_saga_id"
     on "order".payment_outbox
         (type, saga_id, saga_status);
 
+CREATE TABLE "order".customers
+(
+    id        uuid NOT NULL,
+    username  character varying COLLATE pg_catalog."default",
+    firstname character varying COLLATE pg_catalog."default",
+    lastname  character varying COLLATE pg_catalog."default",
+    CONSTRAINT customer_pkey PRIMARY KEY (id)
+);
+

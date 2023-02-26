@@ -1,6 +1,7 @@
 package org.sarav.food.order.service.messaging.mapper;
 
 import org.sarav.food.order.*;
+import org.sarav.food.order.service.app.dto.message.CustomerModel;
 import org.sarav.food.order.service.app.dto.message.PaymentResponse;
 import org.sarav.food.order.service.app.dto.message.RestaurantApprovalResponse;
 import org.sarav.food.order.service.app.outbox.model.approval.OrderApprovalEventPayload;
@@ -68,4 +69,14 @@ public class OrderMessagingDataMapper {
                 .createdAt(avroModel.getCreatedAt())
                 .build();
     }
+
+    public CustomerModel customerAvroModelToCustomerModel(CustomerAvroModel customerAvroModel) {
+        return CustomerModel.builder()
+                .id(customerAvroModel.getId())
+                .firstName(customerAvroModel.getFirstname())
+                .lastName(customerAvroModel.getLastname())
+                .username(customerAvroModel.getUsername())
+                .build();
+    }
+
 }
